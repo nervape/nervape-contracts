@@ -2,6 +2,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import { config as dotenvConfig } from "dotenv";
+import "hardhat-abi-exporter";
 import "hardhat-gas-reporter";
 import { HardhatUserConfig } from "hardhat/config";
 import { HttpNetworkAccountsUserConfig, NetworkUserConfig } from "hardhat/types";
@@ -136,6 +137,15 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "src/types",
     target: "ethers-v5",
+  },
+  abiExporter: {
+    path: "./abi",
+    runOnCompile: true,
+    clear: true,
+    flat: true,
+    only: [":Nervape"],
+    spacing: 2,
+    format: "json",
   },
 };
 
