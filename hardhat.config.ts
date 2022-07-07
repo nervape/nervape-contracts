@@ -4,7 +4,7 @@ import "@typechain/hardhat";
 import { config as dotenvConfig } from "dotenv";
 import "hardhat-gas-reporter";
 import { HardhatUserConfig } from "hardhat/config";
-import { NetworkUserConfig } from "hardhat/types";
+import { HttpNetworkAccountsUserConfig, NetworkUserConfig } from "hardhat/types";
 import { resolve } from "path";
 import "solidity-coverage";
 
@@ -15,8 +15,9 @@ dotenvConfig({ path: resolve(__dirname, "./.env") });
 
 // Ensure that we have all the environment variables we need.
 const mnemonic: string | undefined = process.env.MNEMONIC;
-if (!mnemonic) {
-  throw new Error("Please set your MNEMONIC in a .env file");
+const privateKey = process.env.PRIVATE_KEY as string;
+if (!mnemonic && !privateKey) {
+  throw new Error("Please set your MNEMONIC or PRIVATE_KEY in a .env file");
 }
 
 const infuraApiKey: string | undefined = process.env.INFURA_API_KEY;
@@ -34,6 +35,8 @@ const chainIds = {
   "polygon-mainnet": 137,
   "polygon-mumbai": 80001,
   rinkeby: 4,
+  "godwoken-testnet": 71401,
+  godwoken: 71402,
 };
 
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
@@ -45,15 +48,26 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     case "bsc":
       jsonRpcUrl = "https://bsc-dataseed1.binance.org";
       break;
+    case "godwoken-testnet":
+      jsonRpcUrl = "https://godwoken-testnet-v1.ckbapp.dev";
+      break;
+    case "godwoken":
+      jsonRpcUrl = "https://v1.mainnet.godwoken.io/rpc";
+      break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
   }
+
+  const accounts = privateKey
+    ? [privateKey]
+    : ({
+        count: 10,
+        mnemonic,
+        path: "m/44'/60'/0'/0",
+      } as HttpNetworkAccountsUserConfig);
+
   return {
-    accounts: {
-      count: 10,
-      mnemonic,
-      path: "m/44'/60'/0'/0",
-    },
+    accounts,
     chainId: chainIds[chain],
     url: jsonRpcUrl,
   };
@@ -94,6 +108,8 @@ const config: HardhatUserConfig = {
     "polygon-mainnet": getChainConfig("polygon-mainnet"),
     "polygon-mumbai": getChainConfig("polygon-mumbai"),
     rinkeby: getChainConfig("rinkeby"),
+    "godwoken-testnet": getChainConfig("godwoken-testnet"),
+    godwoken: getChainConfig("godwoken"),
   },
   paths: {
     artifacts: "./artifacts",
@@ -102,7 +118,7 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   solidity: {
-    version: "0.8.13",
+    version: "0.8.9",
     settings: {
       metadata: {
         // Not including the metadata hash

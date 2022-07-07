@@ -1,16 +1,6 @@
-# Solidity Template
+# nervape contracts
 
-My favorite setup for writing Solidity smart contracts.
-
-- [Hardhat](https://github.com/nomiclabs/hardhat): compile and run the smart contracts on a local development network
-- [TypeChain](https://github.com/ethereum-ts/TypeChain): generate TypeScript types for smart contracts
-- [Ethers](https://github.com/ethers-io/ethers.js/): renowned Ethereum library and wallet implementation
-- [Waffle](https://github.com/EthWorks/Waffle): tooling for writing comprehensive smart contract tests
-- [Solhint](https://github.com/protofire/solhint): linter
-- [Solcover](https://github.com/sc-forks/solidity-coverage): code coverage
-- [Prettier Plugin Solidity](https://github.com/prettier-solidity/prettier-plugin-solidity): code formatter
-
-This repo is a GitHub template, so to start using it, click the "Use this template" button at the top of the page.
+nervape solidity smart contracts
 
 ## Usage
 
@@ -93,8 +83,10 @@ $ yarn clean
 
 Deploy the contracts to Hardhat Network:
 
+Deploy to testnet
+
 ```sh
-$ yarn deploy --greeting "Bonjour, le monde!"
+$ yarn deploy --network godwoken-testnet
 ```
 
 ## Syntax Highlighting
