@@ -1,0 +1,33 @@
+{
+  "Nervape": "0xD0Df7A0C50D9c222cc66208D81549B2D96108bd9",
+  "Factory": "0xB027eb986Aefc6D7f3A203336fBA9b6d85e337F5",
+  "Minter": "0xFfd0566A3536b06d2566FEcDfDaD559F80e36114",
+  "groups": [
+    {
+      "apes": [
+        {
+          "name": "GROOVY Developer",
+          "symbol": "GD",
+          "address": "0x8f7B2805F24bF3fb98295dBea8d71bDCa853369f",
+          "maxSupply": 256
+        },
+        {
+          "name": "GROOVY Rookie",
+          "symbol": "GR",
+          "address": "0x9Ca1516D07E86f3430A8E632Ae5fd51080aDfD8E",
+          "maxSupply": 256
+        },
+        {
+          "name": "GROOVY Miner",
+          "symbol": "GM",
+          "address": "0x4d8949102dDF9FB37cd104258d752faD70333BD0",
+          "maxSupply": 256
+        }
+      ],
+      "price": "10 CKB",
+      "wlStartTime": 1657870942,
+      "startTime": 1658043773,
+      "tx": "0x93fbf2248cfca9d525e6d97d98cbc68b54c229b4aa132a474a43d1413d988dbd"
+    }
+  ]
+}

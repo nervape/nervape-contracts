@@ -98,7 +98,13 @@ Deploy the contracts to Hardhat Network:
 Deploy to testnet
 
 ```sh
-$ yarn deploy --network godwoken-testnet
+# deploy ape factory
+$ yarn deploy:factory --network godwoken-testnet
+```
+
+```sh
+# deploy ape minter
+$ yarn deploy:minter --network godwoken-testnet
 ```
 
 ## Syntax Highlighting

@@ -49,13 +49,37 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
+      name: "Ape",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Ape__factory>;
+    getContractFactory(
+      name: "BridgedApe",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BridgedApe__factory>;
+    getContractFactory(
+      name: "Factory",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Factory__factory>;
+    getContractFactory(
       name: "Greeter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Greeter__factory>;
     getContractFactory(
+      name: "IApe",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IApe__factory>;
+    getContractFactory(
+      name: "Minter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Minter__factory>;
+    getContractFactory(
       name: "Nervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Nervape__factory>;
+    getContractFactory(
+      name: "Whitelist",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Whitelist__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -103,15 +127,45 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
+      name: "Ape",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Ape>;
+    getContractAt(
+      name: "BridgedApe",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BridgedApe>;
+    getContractAt(
+      name: "Factory",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Factory>;
+    getContractAt(
       name: "Greeter",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Greeter>;
     getContractAt(
+      name: "IApe",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IApe>;
+    getContractAt(
+      name: "Minter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Minter>;
+    getContractAt(
       name: "Nervape",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Nervape>;
+    getContractAt(
+      name: "Whitelist",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Whitelist>;
 
     // default types
     getContractFactory(
