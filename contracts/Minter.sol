@@ -14,12 +14,14 @@ interface IApe {
 
 contract Minter is Ownable, Whitelist {
     address payable public recipient;
+    uint256 private nonce = 0;
     uint256 public totalGroup = 0;
+
     mapping(uint256 => address[]) public groupApes;
 
-    mapping(uint256 => uint256) public prices;
-    // groupId => [ wlStartTime, startTime ]
-    mapping(uint256 => uint256[2]) public startTimes;
+    // groupId => [ wlPrice, price, wlStartTime, startTime, maxPerWallet ]
+    mapping(uint256 => uint256[5]) public groupConfigs;
+
     // groupId => user => count
     mapping(uint256 => mapping(address => uint256)) public minted;
 
@@ -29,21 +31,35 @@ contract Minter is Ownable, Whitelist {
 
     function createGroup(
         address[] calldata apes,
+        uint256 wlPrice,
         uint256 price,
         uint256 wlStartTime,
-        uint256 startTime
+        uint256 startTime,
+        uint256 maxPerWallet
     ) external onlyOwner {
         require(apes.length > 0, "No apes");
-        require(wlStartTime < startTime, "Invalid whitelist start time");
+        require(wlStartTime > block.timestamp && startTime > wlStartTime, "Invalid start time");
 
         totalGroup += 1;
         groupApes[totalGroup] = apes;
-        prices[totalGroup] = price;
-        startTimes[totalGroup] = [wlStartTime, startTime];
+        groupConfigs[totalGroup][0] = wlPrice;
+        groupConfigs[totalGroup][1] = price;
+        groupConfigs[totalGroup][2] = wlStartTime;
+        groupConfigs[totalGroup][3] = startTime;
+        groupConfigs[totalGroup][4] = maxPerWallet;
     }
 
     function setRecipient(address payable recipient_) external onlyOwner {
+        require(recipient_ != address(0), "Invalid address");
         recipient = recipient_;
+    }
+
+    function setConfig(
+        uint256 groupId,
+        uint256 index,
+        uint256 val
+    ) external onlyOwner {
+        groupConfigs[groupId][index] = val;
     }
 
     function mintable(address ape) public view returns (uint256) {
@@ -76,17 +92,22 @@ contract Minter is Ownable, Whitelist {
         require(msg.sender == tx.origin, "Only EOA");
         require(groupId > 0 && groupId <= totalGroup, "Invalid group id");
         require(count > 0, "Wrong mint amount");
-        require(minted[groupId][msg.sender] + count <= 5, "Exceeded max mint amount");
+        require(minted[groupId][msg.sender] + count <= groupConfigs[groupId][4], "Exceeded max mint amount");
 
+        uint256 paymentValue;
+        uint256 startTime;
         if (isWhitelisted(groupId, msg.sender)) {
-            require(block.timestamp >= startTimes[groupId][0], "WL not start");
+            paymentValue = count * groupConfigs[groupId][0];
+            startTime = groupConfigs[groupId][2];
         } else {
-            require(block.timestamp >= startTimes[groupId][1], "Not start");
+            paymentValue = count * groupConfigs[groupId][1];
+            startTime = groupConfigs[groupId][3];
         }
+        require(block.timestamp >= startTime, "Not start");
+        require(msg.value == paymentValue, "Wrong payment value");
 
-        require(msg.value == count * prices[groupId], "Wrong payment value");
         minted[groupId][msg.sender] += count;
-        recipient.transfer(count * prices[groupId]);
+        recipient.transfer(paymentValue);
 
         uint256 seed = uint256(keccak256(abi.encodePacked(groupId, count, tx.origin)));
         uint256 rand = random(seed);
@@ -102,7 +123,7 @@ contract Minter is Ownable, Whitelist {
         }
     }
 
-    function random(uint256 seed) internal view returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp, seed)));
+    function random(uint256 seed) internal returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp, nonce++, seed)));
     }
 }

@@ -33,24 +33,25 @@ import type {
 export interface MinterInterface extends utils.Interface {
   functions: {
     "add(uint256,address[])": FunctionFragment;
-    "createGroup(address[],uint256,uint256,uint256)": FunctionFragment;
+    "createGroup(address[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
     "groupApes(uint256,uint256)": FunctionFragment;
+    "groupConfigs(uint256,uint256)": FunctionFragment;
     "isWhitelisted(uint256,address)": FunctionFragment;
     "mint(uint256,uint256)": FunctionFragment;
     "mintable(address)": FunctionFragment;
     "mintableApes(uint256)": FunctionFragment;
     "minted(uint256,address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "prices(uint256)": FunctionFragment;
     "recipient()": FunctionFragment;
     "remove(uint256,address[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "setConfig(uint256,uint256,uint256)": FunctionFragment;
     "setRecipient(address)": FunctionFragment;
-    "startTimes(uint256,uint256)": FunctionFragment;
     "totalGroup()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "whiteAddressIndexes(uint256,address)": FunctionFragment;
     "whiteAddresses(uint256,uint256)": FunctionFragment;
+    "whiteAddressesLength(uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -58,22 +59,23 @@ export interface MinterInterface extends utils.Interface {
       | "add"
       | "createGroup"
       | "groupApes"
+      | "groupConfigs"
       | "isWhitelisted"
       | "mint"
       | "mintable"
       | "mintableApes"
       | "minted"
       | "owner"
-      | "prices"
       | "recipient"
       | "remove"
       | "renounceOwnership"
+      | "setConfig"
       | "setRecipient"
-      | "startTimes"
       | "totalGroup"
       | "transferOwnership"
       | "whiteAddressIndexes"
       | "whiteAddresses"
+      | "whiteAddressesLength"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -86,11 +88,17 @@ export interface MinterInterface extends utils.Interface {
       PromiseOrValue<string>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "groupApes",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "groupConfigs",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -114,10 +122,6 @@ export interface MinterInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "prices",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(functionFragment: "recipient", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "remove",
@@ -128,12 +132,16 @@ export interface MinterInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setRecipient",
-    values: [PromiseOrValue<string>]
+    functionFragment: "setConfig",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "startTimes",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    functionFragment: "setRecipient",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "totalGroup",
@@ -151,6 +159,10 @@ export interface MinterInterface extends utils.Interface {
     functionFragment: "whiteAddresses",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "whiteAddressesLength",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
 
   decodeFunctionResult(functionFragment: "add", data: BytesLike): Result;
   decodeFunctionResult(
@@ -158,6 +170,10 @@ export interface MinterInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "groupApes", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "groupConfigs",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isWhitelisted",
     data: BytesLike
@@ -170,18 +186,17 @@ export interface MinterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "minted", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "prices", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "recipient", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "remove", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setConfig", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setRecipient",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "startTimes", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "totalGroup", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
@@ -193,6 +208,10 @@ export interface MinterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "whiteAddresses",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "whiteAddressesLength",
     data: BytesLike
   ): Result;
 
@@ -250,9 +269,11 @@ export interface Minter extends BaseContract {
 
     createGroup(
       apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -261,6 +282,12 @@ export interface Minter extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    groupConfigs(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     isWhitelisted(
       groupId: PromiseOrValue<BigNumberish>,
@@ -298,11 +325,6 @@ export interface Minter extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    prices(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     recipient(overrides?: CallOverrides): Promise<[string]>;
 
     remove(
@@ -315,16 +337,17 @@ export interface Minter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setConfig(
+      groupId: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
+      val: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setRecipient(
       recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    startTimes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     totalGroup(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -344,6 +367,11 @@ export interface Minter extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    whiteAddressesLength(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
   add(
@@ -354,9 +382,11 @@ export interface Minter extends BaseContract {
 
   createGroup(
     apes: PromiseOrValue<string>[],
+    wlPrice: PromiseOrValue<BigNumberish>,
     price: PromiseOrValue<BigNumberish>,
     wlStartTime: PromiseOrValue<BigNumberish>,
     startTime: PromiseOrValue<BigNumberish>,
+    maxPerWallet: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -365,6 +395,12 @@ export interface Minter extends BaseContract {
     arg1: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  groupConfigs(
+    arg0: PromiseOrValue<BigNumberish>,
+    arg1: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   isWhitelisted(
     groupId: PromiseOrValue<BigNumberish>,
@@ -402,11 +438,6 @@ export interface Minter extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  prices(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   recipient(overrides?: CallOverrides): Promise<string>;
 
   remove(
@@ -419,16 +450,17 @@ export interface Minter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setConfig(
+    groupId: PromiseOrValue<BigNumberish>,
+    index: PromiseOrValue<BigNumberish>,
+    val: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setRecipient(
     recipient_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  startTimes(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   totalGroup(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -449,6 +481,11 @@ export interface Minter extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  whiteAddressesLength(
+    groupId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   callStatic: {
     add(
       groupId: PromiseOrValue<BigNumberish>,
@@ -458,9 +495,11 @@ export interface Minter extends BaseContract {
 
     createGroup(
       apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -469,6 +508,12 @@ export interface Minter extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    groupConfigs(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     isWhitelisted(
       groupId: PromiseOrValue<BigNumberish>,
@@ -506,11 +551,6 @@ export interface Minter extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    prices(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     recipient(overrides?: CallOverrides): Promise<string>;
 
     remove(
@@ -521,16 +561,17 @@ export interface Minter extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
+    setConfig(
+      groupId: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
+      val: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setRecipient(
       recipient_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    startTimes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     totalGroup(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -550,6 +591,11 @@ export interface Minter extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    whiteAddressesLength(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -572,13 +618,21 @@ export interface Minter extends BaseContract {
 
     createGroup(
       apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     groupApes(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    groupConfigs(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -614,11 +668,6 @@ export interface Minter extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    prices(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     recipient(overrides?: CallOverrides): Promise<BigNumber>;
 
     remove(
@@ -631,15 +680,16 @@ export interface Minter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setRecipient(
-      recipient_: PromiseOrValue<string>,
+    setConfig(
+      groupId: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
+      val: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    startTimes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
+    setRecipient(
+      recipient_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     totalGroup(overrides?: CallOverrides): Promise<BigNumber>;
@@ -660,6 +710,11 @@ export interface Minter extends BaseContract {
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    whiteAddressesLength(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -671,13 +726,21 @@ export interface Minter extends BaseContract {
 
     createGroup(
       apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     groupApes(
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    groupConfigs(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -713,11 +776,6 @@ export interface Minter extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    prices(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     recipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     remove(
@@ -730,15 +788,16 @@ export interface Minter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setRecipient(
-      recipient_: PromiseOrValue<string>,
+    setConfig(
+      groupId: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
+      val: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    startTimes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
+    setRecipient(
+      recipient_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     totalGroup(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -757,6 +816,11 @@ export interface Minter extends BaseContract {
     whiteAddresses(
       arg0: PromiseOrValue<BigNumberish>,
       arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    whiteAddressesLength(
+      groupId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

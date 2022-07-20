@@ -37,10 +37,13 @@ task("deploy:Minter")
 
 task("deploy:Minter:createGroup")
   .addParam("group", "group index")
-  .addParam("price", "ape mint price each")
+  .addParam("wlprice", "whitelist mint price")
+  .addParam("price", "normal mint price each")
   .addParam("wlstarttime", "whitelisted mint start time")
   .addParam("starttime", "normal mint start time")
+  .addParam("maxperwallet", "max mint per wallet")
   .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+    const wlprice = ethers.utils.parseEther(taskArguments.wlprice);
     const price = ethers.utils.parseEther(taskArguments.price);
     const groupIndex = parseInt(taskArguments.group);
     const group = getDeployment(network.name, "groups")[groupIndex];
@@ -48,14 +51,23 @@ task("deploy:Minter:createGroup")
 
     console.log("apes: ", group.apes);
     console.log("price: ", taskArguments.price);
+    console.log("WL price: ", taskArguments.wlprice);
     console.log("WL start time: ", taskArguments.wlstarttime);
     console.log("Start time: ", taskArguments.starttime);
+    console.log("Max per wallet: ", taskArguments.maxperwallet);
 
     const signers: SignerWithAddress[] = await ethers.getSigners();
     const owner = signers[0];
     const minterFactory: Minter__factory = <Minter__factory>await ethers.getContractFactory("Minter");
     const minter: Minter = <Minter>await minterFactory.connect(owner).attach(getDeployment(network.name, "Minter"));
-    const tx = await minter.createGroup(apeAddresses, price, taskArguments.wlstarttime, taskArguments.starttime);
+    const tx = await minter.createGroup(
+      apeAddresses,
+      wlprice,
+      price,
+      taskArguments.wlstarttime,
+      taskArguments.starttime,
+      taskArguments.maxperwallet,
+    );
     const receipt = await tx.wait();
     console.log("receipt = ", receipt);
     console.log("Minter Group %d created", groupIndex + 1);
