@@ -29,14 +29,14 @@ import type {
   utils,
 } from "ethers";
 
-export interface NervapeInterface extends utils.Interface {
+export interface BridgedNervapeInterface extends utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxSupply()": FunctionFragment;
-    "mint(address)": FunctionFragment;
+    "mint(address,uint256)": FunctionFragment;
     "minter()": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -104,7 +104,7 @@ export interface NervapeInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "maxSupply", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [PromiseOrValue<string>]
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "minter", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -302,12 +302,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface Nervape extends BaseContract {
+export interface BridgedNervape extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: NervapeInterface;
+  interface: BridgedNervapeInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -355,6 +355,7 @@ export interface Nervape extends BaseContract {
 
     mint(
       to: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -468,6 +469,7 @@ export interface Nervape extends BaseContract {
 
   mint(
     to: PromiseOrValue<string>,
+    tokenId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -579,7 +581,11 @@ export interface Nervape extends BaseContract {
 
     maxSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
-    mint(to: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
+    mint(
+      to: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     minter(overrides?: CallOverrides): Promise<string>;
 
@@ -734,6 +740,7 @@ export interface Nervape extends BaseContract {
 
     mint(
       to: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -848,6 +855,7 @@ export interface Nervape extends BaseContract {
 
     mint(
       to: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

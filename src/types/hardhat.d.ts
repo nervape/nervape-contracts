@@ -49,33 +49,41 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "Ape",
+      name: "BridgedNervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Ape__factory>;
+    ): Promise<Contracts.BridgedNervape__factory>;
     getContractFactory(
-      name: "BridgedApe",
+      name: "CampaignMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BridgedApe__factory>;
-    getContractFactory(
-      name: "Factory",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Factory__factory>;
+    ): Promise<Contracts.CampaignMinter__factory>;
     getContractFactory(
       name: "Greeter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Greeter__factory>;
     getContractFactory(
-      name: "IApe",
+      name: "GroupMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IApe__factory>;
+    ): Promise<Contracts.GroupMinter__factory>;
     getContractFactory(
-      name: "Minter",
+      name: "INervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Minter__factory>;
+    ): Promise<Contracts.INervape__factory>;
     getContractFactory(
       name: "Nervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Nervape__factory>;
+    getContractFactory(
+      name: "NervapeFactory",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.NervapeFactory__factory>;
+    getContractFactory(
+      name: "Sample",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Sample__factory>;
+    getContractFactory(
+      name: "StoryVoting",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StoryVoting__factory>;
     getContractFactory(
       name: "Whitelist",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -127,40 +135,50 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "Ape",
+      name: "BridgedNervape",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Ape>;
+    ): Promise<Contracts.BridgedNervape>;
     getContractAt(
-      name: "BridgedApe",
+      name: "CampaignMinter",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.BridgedApe>;
-    getContractAt(
-      name: "Factory",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Factory>;
+    ): Promise<Contracts.CampaignMinter>;
     getContractAt(
       name: "Greeter",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Greeter>;
     getContractAt(
-      name: "IApe",
+      name: "GroupMinter",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.IApe>;
+    ): Promise<Contracts.GroupMinter>;
     getContractAt(
-      name: "Minter",
+      name: "INervape",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Minter>;
+    ): Promise<Contracts.INervape>;
     getContractAt(
       name: "Nervape",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Nervape>;
+    getContractAt(
+      name: "NervapeFactory",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.NervapeFactory>;
+    getContractAt(
+      name: "Sample",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Sample>;
+    getContractAt(
+      name: "StoryVoting",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.StoryVoting>;
     getContractAt(
       name: "Whitelist",
       address: string,

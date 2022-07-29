@@ -3,9 +3,9 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "./INervape.sol";
 
-contract Nervape is INervape, ERC721Enumerable, Ownable {
+// For mNFT
+contract BridgedNervape is ERC721Enumerable, Ownable {
     string private _uri;
     address public minter;
     uint256 public maxSupply;
@@ -39,8 +39,8 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         return _uri;
     }
 
-    function mint(address to) external onlyMinter {
+    function mint(address to, uint256 tokenId) external onlyMinter {
         require(totalSupply() < maxSupply, "Exceeded max supply");
-        _safeMint(to, totalSupply());
+        _safeMint(to, tokenId);
     }
 }

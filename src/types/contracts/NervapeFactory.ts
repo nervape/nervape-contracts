@@ -29,7 +29,7 @@ import type {
   utils,
 } from "ethers";
 
-export interface FactoryInterface extends utils.Interface {
+export interface NervapeFactoryInterface extends utils.Interface {
   functions: {
     "allCollections(uint256)": FunctionFragment;
     "allCollectionsLength()": FunctionFragment;
@@ -142,12 +142,12 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface Factory extends BaseContract {
+export interface NervapeFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: FactoryInterface;
+  interface: NervapeFactoryInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
