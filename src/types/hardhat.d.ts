@@ -69,9 +69,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.INervape__factory>;
     getContractFactory(
+      name: "MerkleWhitelist",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MerkleWhitelist__factory>;
+    getContractFactory(
       name: "Nervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Nervape__factory>;
+    getContractFactory(
+      name: "NervapeCharacter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.NervapeCharacter__factory>;
     getContractFactory(
       name: "NervapeFactory",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -160,10 +168,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.INervape>;
     getContractAt(
+      name: "MerkleWhitelist",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MerkleWhitelist>;
+    getContractAt(
       name: "Nervape",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Nervape>;
+    getContractAt(
+      name: "NervapeCharacter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.NervapeCharacter>;
     getContractAt(
       name: "NervapeFactory",
       address: string,

@@ -47,10 +47,7 @@ export interface GroupMinterInterface extends utils.Interface {
     "setRecipient(address)": FunctionFragment;
     "totalGroup()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateGroup(uint256,uint256,uint256)": FunctionFragment;
-    "whiteAddressIndexes(uint256,address)": FunctionFragment;
-    "whiteAddresses(uint256,uint256)": FunctionFragment;
-    "whiteAddressesLength(uint256)": FunctionFragment;
+    "updateGroup(uint256,address[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -71,9 +68,6 @@ export interface GroupMinterInterface extends utils.Interface {
       | "totalGroup"
       | "transferOwnership"
       | "updateGroup"
-      | "whiteAddressIndexes"
-      | "whiteAddresses"
-      | "whiteAddressesLength"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -141,21 +135,13 @@ export interface GroupMinterInterface extends utils.Interface {
     functionFragment: "updateGroup",
     values: [
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "whiteAddressIndexes",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "whiteAddresses",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "whiteAddressesLength",
-    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(functionFragment: "add", data: BytesLike): Result;
@@ -193,18 +179,6 @@ export interface GroupMinterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "updateGroup",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whiteAddressIndexes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whiteAddresses",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whiteAddressesLength",
     data: BytesLike
   ): Result;
 
@@ -284,8 +258,8 @@ export interface GroupMinter extends BaseContract {
     >;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -345,27 +319,14 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      val: PromiseOrValue<BigNumberish>,
+      apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
+      wlStartTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
   };
 
   add(
@@ -398,8 +359,8 @@ export interface GroupMinter extends BaseContract {
   >;
 
   isWhitelisted(
-    groupId: PromiseOrValue<BigNumberish>,
-    addr: PromiseOrValue<string>,
+    arg0: PromiseOrValue<BigNumberish>,
+    arg1: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -459,27 +420,14 @@ export interface GroupMinter extends BaseContract {
 
   updateGroup(
     groupId: PromiseOrValue<BigNumberish>,
-    index: PromiseOrValue<BigNumberish>,
-    val: PromiseOrValue<BigNumberish>,
+    apes: PromiseOrValue<string>[],
+    wlPrice: PromiseOrValue<BigNumberish>,
+    price: PromiseOrValue<BigNumberish>,
+    wlStartTime: PromiseOrValue<BigNumberish>,
+    startTime: PromiseOrValue<BigNumberish>,
+    maxPerWallet: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  whiteAddressIndexes(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  whiteAddresses(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  whiteAddressesLength(
-    groupId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   callStatic: {
     add(
@@ -512,8 +460,8 @@ export interface GroupMinter extends BaseContract {
     >;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -571,27 +519,14 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      val: PromiseOrValue<BigNumberish>,
+      apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
+      wlStartTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -628,8 +563,8 @@ export interface GroupMinter extends BaseContract {
     ): Promise<BigNumber>;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -683,26 +618,13 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      val: PromiseOrValue<BigNumberish>,
+      apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
+      wlStartTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
@@ -729,8 +651,8 @@ export interface GroupMinter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -784,26 +706,13 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      val: PromiseOrValue<BigNumberish>,
+      apes: PromiseOrValue<string>[],
+      wlPrice: PromiseOrValue<BigNumberish>,
+      price: PromiseOrValue<BigNumberish>,
+      wlStartTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

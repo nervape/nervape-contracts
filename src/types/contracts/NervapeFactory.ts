@@ -120,7 +120,7 @@ export interface NervapeFactoryInterface extends utils.Interface {
 }
 
 export interface CollectionCreatedEventObject {
-  ape: string;
+  collection: string;
 }
 export type CollectionCreatedEvent = TypedEvent<
   [string],
@@ -270,8 +270,10 @@ export interface NervapeFactory extends BaseContract {
   };
 
   filters: {
-    "CollectionCreated(address)"(ape?: null): CollectionCreatedEventFilter;
-    CollectionCreated(ape?: null): CollectionCreatedEventFilter;
+    "CollectionCreated(address)"(
+      collection?: null
+    ): CollectionCreatedEventFilter;
+    CollectionCreated(collection?: null): CollectionCreatedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,

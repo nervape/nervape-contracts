@@ -19,7 +19,6 @@ import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   BaseContract,
   BigNumber,
-  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -29,50 +28,33 @@ import type {
   utils,
 } from "ethers";
 
-export interface FactoryInterface extends utils.Interface {
+export interface MerkleWhitelistInterface extends utils.Interface {
   functions: {
-    "allCollections(uint256)": FunctionFragment;
-    "allCollectionsLength()": FunctionFragment;
-    "collections(bytes32)": FunctionFragment;
-    "createCollection(string,string,string,address,address,uint256)": FunctionFragment;
+    "isWhitelisted(address,bytes32[])": FunctionFragment;
+    "merkleRoot()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "setMerkleRoot(bytes32)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "allCollections"
-      | "allCollectionsLength"
-      | "collections"
-      | "createCollection"
+      | "isWhitelisted"
+      | "merkleRoot"
       | "owner"
       | "renounceOwnership"
+      | "setMerkleRoot"
       | "transferOwnership"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "allCollections",
-    values: [PromiseOrValue<BigNumberish>]
+    functionFragment: "isWhitelisted",
+    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "allCollectionsLength",
+    functionFragment: "merkleRoot",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "collections",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "createCollection",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -80,29 +62,26 @@ export interface FactoryInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "setMerkleRoot",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "allCollections",
+    functionFragment: "isWhitelisted",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "allCollectionsLength",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "collections",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "createCollection",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "merkleRoot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMerkleRoot",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -111,24 +90,11 @@ export interface FactoryInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "CollectionCreated(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CollectionCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
-
-export interface CollectionCreatedEventObject {
-  ape: string;
-}
-export type CollectionCreatedEvent = TypedEvent<
-  [string],
-  CollectionCreatedEventObject
->;
-
-export type CollectionCreatedEventFilter =
-  TypedEventFilter<CollectionCreatedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -142,12 +108,12 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface Factory extends BaseContract {
+export interface MerkleWhitelist extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: FactoryInterface;
+  interface: MerkleWhitelistInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -169,31 +135,22 @@ export interface Factory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    allCollections(
-      arg0: PromiseOrValue<BigNumberish>,
+    isWhitelisted(
+      account: PromiseOrValue<string>,
+      proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[boolean]>;
 
-    allCollectionsLength(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    collections(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    createCollection(
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
-      uri_: PromiseOrValue<string>,
-      minter_: PromiseOrValue<string>,
-      owner_: PromiseOrValue<string>,
-      maxSupply_: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    merkleRoot(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setMerkleRoot(
+      root: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -203,31 +160,22 @@ export interface Factory extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  allCollections(
-    arg0: PromiseOrValue<BigNumberish>,
+  isWhitelisted(
+    account: PromiseOrValue<string>,
+    proof: PromiseOrValue<BytesLike>[],
     overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<boolean>;
 
-  allCollectionsLength(overrides?: CallOverrides): Promise<BigNumber>;
-
-  collections(
-    arg0: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  createCollection(
-    name_: PromiseOrValue<string>,
-    symbol_: PromiseOrValue<string>,
-    uri_: PromiseOrValue<string>,
-    minter_: PromiseOrValue<string>,
-    owner_: PromiseOrValue<string>,
-    maxSupply_: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  merkleRoot(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setMerkleRoot(
+    root: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -237,31 +185,22 @@ export interface Factory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    allCollections(
-      arg0: PromiseOrValue<BigNumberish>,
+    isWhitelisted(
+      account: PromiseOrValue<string>,
+      proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
-    ): Promise<string>;
+    ): Promise<boolean>;
 
-    allCollectionsLength(overrides?: CallOverrides): Promise<BigNumber>;
-
-    collections(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    createCollection(
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
-      uri_: PromiseOrValue<string>,
-      minter_: PromiseOrValue<string>,
-      owner_: PromiseOrValue<string>,
-      maxSupply_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    merkleRoot(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    setMerkleRoot(
+      root: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -270,9 +209,6 @@ export interface Factory extends BaseContract {
   };
 
   filters: {
-    "CollectionCreated(address)"(ape?: null): CollectionCreatedEventFilter;
-    CollectionCreated(ape?: null): CollectionCreatedEventFilter;
-
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
@@ -284,31 +220,22 @@ export interface Factory extends BaseContract {
   };
 
   estimateGas: {
-    allCollections(
-      arg0: PromiseOrValue<BigNumberish>,
+    isWhitelisted(
+      account: PromiseOrValue<string>,
+      proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    allCollectionsLength(overrides?: CallOverrides): Promise<BigNumber>;
-
-    collections(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    createCollection(
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
-      uri_: PromiseOrValue<string>,
-      minter_: PromiseOrValue<string>,
-      owner_: PromiseOrValue<string>,
-      maxSupply_: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    merkleRoot(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setMerkleRoot(
+      root: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -319,33 +246,22 @@ export interface Factory extends BaseContract {
   };
 
   populateTransaction: {
-    allCollections(
-      arg0: PromiseOrValue<BigNumberish>,
+    isWhitelisted(
+      account: PromiseOrValue<string>,
+      proof: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    allCollectionsLength(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    collections(
-      arg0: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    createCollection(
-      name_: PromiseOrValue<string>,
-      symbol_: PromiseOrValue<string>,
-      uri_: PromiseOrValue<string>,
-      minter_: PromiseOrValue<string>,
-      owner_: PromiseOrValue<string>,
-      maxSupply_: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    merkleRoot(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMerkleRoot(
+      root: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

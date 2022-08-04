@@ -18,7 +18,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "ape",
+        name: "collection",
         type: "address",
       },
     ],

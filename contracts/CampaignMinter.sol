@@ -9,8 +9,9 @@ contract CampaignMinter is Ownable {
         address[] relatedApes;
         address scene;
         uint256 price;
+        uint256 claimStartTime;
+        uint256 claimEndTime;
         uint256 startTime;
-        uint256 endTime;
         uint256 maxPerWallet;
     }
 
@@ -33,21 +34,49 @@ contract CampaignMinter is Ownable {
         address scene,
         address[] calldata relatedApes,
         uint256 price,
+        uint256 claimStartTime,
+        uint256 claimEndTime,
         uint256 startTime,
-        uint256 endTime,
         uint256 maxPerWallet
     ) external onlyOwner {
-        require(scene != address(0), "Invalid scene");
+        require(scene != address(0), "Invalid scene address");
         require(relatedApes.length > 0, "Invalid related apes");
-        require(startTime < endTime, "Invalid end time");
+        require(claimStartTime < claimEndTime, "Invalid claim end time");
 
         totalCampaign += 1;
         Campaign storage campaign = campaigns[totalCampaign];
         campaign.scene = scene;
         campaign.relatedApes = relatedApes;
         campaign.price = price;
+        campaign.claimStartTime = claimStartTime;
+        campaign.claimEndTime = claimEndTime;
         campaign.startTime = startTime;
-        campaign.endTime = endTime;
+        campaign.maxPerWallet = maxPerWallet;
+    }
+
+    function updateCampaign(
+        uint256 campaignId,
+        address scene,
+        address[] calldata relatedApes,
+        uint256 price,
+        uint256 claimStartTime,
+        uint256 claimEndTime,
+        uint256 startTime,
+        uint256 maxPerWallet
+    ) external onlyOwner {
+        require(campaignId <= totalCampaign, "Invalid campaign id");
+        require(scene != address(0), "Invalid scene address");
+        require(relatedApes.length > 0, "Invalid related apes");
+        require(claimStartTime < claimEndTime, "Invalid claim end time");
+        require(block.timestamp > campaigns[campaignId].claimStartTime, "Cannot update after started");
+
+        Campaign storage campaign = campaigns[campaignId];
+        campaign.scene = scene;
+        campaign.relatedApes = relatedApes;
+        campaign.price = price;
+        campaign.claimStartTime = claimStartTime;
+        campaign.claimEndTime = claimEndTime;
+        campaign.startTime = startTime;
         campaign.maxPerWallet = maxPerWallet;
     }
 
@@ -60,7 +89,8 @@ contract CampaignMinter is Ownable {
         require(msg.sender == tx.origin, "Only EOA");
         Campaign memory campaign = campaigns[campaignId];
         require(tokenIds.length == campaign.relatedApes.length, "Invalid tokenIds");
-        require(campaign.endTime > block.timestamp, "Campaign has ended");
+        require(campaign.claimStartTime < block.timestamp, "Campaign has not started");
+        require(campaign.claimEndTime > block.timestamp, "Campaign has ended");
 
         for (uint256 i = 0; i < tokenIds.length; i++) {
             address ape = campaign.relatedApes[i];
@@ -74,12 +104,11 @@ contract CampaignMinter is Ownable {
     function mint(uint256 campaignId, uint256 count) external payable {
         require(msg.sender == tx.origin, "Only EOA");
         Campaign memory campaign = campaigns[campaignId];
+        require(block.timestamp >= campaign.startTime, "Minting has not started");
 
         require(campaignId > 0 && campaignId <= totalCampaign, "Invalid campaign id");
         require(count > 0 && count <= 2, "Wrong mint amount");
         require(minted[campaignId][msg.sender] + count <= campaign.maxPerWallet, "Exceeded max mint amount");
-        require(block.timestamp >= campaign.startTime, "Campaign is not start");
-        require(block.timestamp < campaign.endTime, "Campaign has ended");
         require(msg.value == count * campaign.price, "Wrong payment value");
 
         minted[campaignId][msg.sender] += count;

@@ -37,9 +37,6 @@ export interface WhitelistInterface extends utils.Interface {
     "remove(uint256,address[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "whiteAddressIndexes(uint256,address)": FunctionFragment;
-    "whiteAddresses(uint256,uint256)": FunctionFragment;
-    "whiteAddressesLength(uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -50,9 +47,6 @@ export interface WhitelistInterface extends utils.Interface {
       | "remove"
       | "renounceOwnership"
       | "transferOwnership"
-      | "whiteAddressIndexes"
-      | "whiteAddresses"
-      | "whiteAddressesLength"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -76,18 +70,6 @@ export interface WhitelistInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "whiteAddressIndexes",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "whiteAddresses",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "whiteAddressesLength",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
 
   decodeFunctionResult(functionFragment: "add", data: BytesLike): Result;
   decodeFunctionResult(
@@ -102,18 +84,6 @@ export interface WhitelistInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whiteAddressIndexes",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whiteAddresses",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "whiteAddressesLength",
     data: BytesLike
   ): Result;
 
@@ -170,8 +140,8 @@ export interface Whitelist extends BaseContract {
     ): Promise<ContractTransaction>;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -191,23 +161,6 @@ export interface Whitelist extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
   };
 
   add(
@@ -217,8 +170,8 @@ export interface Whitelist extends BaseContract {
   ): Promise<ContractTransaction>;
 
   isWhitelisted(
-    groupId: PromiseOrValue<BigNumberish>,
-    addr: PromiseOrValue<string>,
+    arg0: PromiseOrValue<BigNumberish>,
+    arg1: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -239,23 +192,6 @@ export interface Whitelist extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  whiteAddressIndexes(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  whiteAddresses(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  whiteAddressesLength(
-    groupId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   callStatic: {
     add(
       groupId: PromiseOrValue<BigNumberish>,
@@ -264,8 +200,8 @@ export interface Whitelist extends BaseContract {
     ): Promise<void>;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -283,23 +219,6 @@ export interface Whitelist extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   filters: {
@@ -321,8 +240,8 @@ export interface Whitelist extends BaseContract {
     ): Promise<BigNumber>;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -342,23 +261,6 @@ export interface Whitelist extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -369,8 +271,8 @@ export interface Whitelist extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isWhitelisted(
-      groupId: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
+      arg0: PromiseOrValue<BigNumberish>,
+      arg1: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -389,23 +291,6 @@ export interface Whitelist extends BaseContract {
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    whiteAddressIndexes(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    whiteAddresses(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    whiteAddressesLength(
-      groupId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

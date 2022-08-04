@@ -7,7 +7,7 @@ contract NervapeFactory is Ownable {
     mapping(bytes32 => address) public collections;
     address[] public allCollections;
 
-    event CollectionCreated(address ape);
+    event CollectionCreated(address collection);
 
     function createCollection(
         string memory name_,

@@ -34,7 +34,7 @@ export interface CampaignMinterInterface extends utils.Interface {
   functions: {
     "campaigns(uint256)": FunctionFragment;
     "claim(uint256,uint256[])": FunctionFragment;
-    "createCampaign(address,address[],uint256,uint256,uint256,uint256)": FunctionFragment;
+    "createCampaign(address,address[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
     "mint(uint256,uint256)": FunctionFragment;
     "minted(uint256,address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -44,6 +44,7 @@ export interface CampaignMinterInterface extends utils.Interface {
     "setRecipient(address)": FunctionFragment;
     "totalCampaign()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateCampaign(uint256,address,address[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -60,6 +61,7 @@ export interface CampaignMinterInterface extends utils.Interface {
       | "setRecipient"
       | "totalCampaign"
       | "transferOwnership"
+      | "updateCampaign"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -75,6 +77,7 @@ export interface CampaignMinterInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -111,6 +114,19 @@ export interface CampaignMinterInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateCampaign",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
 
   decodeFunctionResult(functionFragment: "campaigns", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
@@ -140,6 +156,10 @@ export interface CampaignMinterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateCampaign",
     data: BytesLike
   ): Result;
 
@@ -193,11 +213,12 @@ export interface CampaignMinter extends BaseContract {
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
         scene: string;
         price: BigNumber;
+        claimStartTime: BigNumber;
+        claimEndTime: BigNumber;
         startTime: BigNumber;
-        endTime: BigNumber;
         maxPerWallet: BigNumber;
       }
     >;
@@ -212,8 +233,9 @@ export interface CampaignMinter extends BaseContract {
       scene: PromiseOrValue<string>,
       relatedApes: PromiseOrValue<string>[],
       price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
-      endTime: PromiseOrValue<BigNumberish>,
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -255,17 +277,30 @@ export interface CampaignMinter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    updateCampaign(
+      campaignId: PromiseOrValue<BigNumberish>,
+      scene: PromiseOrValue<string>,
+      relatedApes: PromiseOrValue<string>[],
+      price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   campaigns(
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+    [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
       scene: string;
       price: BigNumber;
+      claimStartTime: BigNumber;
+      claimEndTime: BigNumber;
       startTime: BigNumber;
-      endTime: BigNumber;
       maxPerWallet: BigNumber;
     }
   >;
@@ -280,8 +315,9 @@ export interface CampaignMinter extends BaseContract {
     scene: PromiseOrValue<string>,
     relatedApes: PromiseOrValue<string>[],
     price: PromiseOrValue<BigNumberish>,
+    claimStartTime: PromiseOrValue<BigNumberish>,
+    claimEndTime: PromiseOrValue<BigNumberish>,
     startTime: PromiseOrValue<BigNumberish>,
-    endTime: PromiseOrValue<BigNumberish>,
     maxPerWallet: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -324,16 +360,29 @@ export interface CampaignMinter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  updateCampaign(
+    campaignId: PromiseOrValue<BigNumberish>,
+    scene: PromiseOrValue<string>,
+    relatedApes: PromiseOrValue<string>[],
+    price: PromiseOrValue<BigNumberish>,
+    claimStartTime: PromiseOrValue<BigNumberish>,
+    claimEndTime: PromiseOrValue<BigNumberish>,
+    startTime: PromiseOrValue<BigNumberish>,
+    maxPerWallet: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     campaigns(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
         scene: string;
         price: BigNumber;
+        claimStartTime: BigNumber;
+        claimEndTime: BigNumber;
         startTime: BigNumber;
-        endTime: BigNumber;
         maxPerWallet: BigNumber;
       }
     >;
@@ -348,8 +397,9 @@ export interface CampaignMinter extends BaseContract {
       scene: PromiseOrValue<string>,
       relatedApes: PromiseOrValue<string>[],
       price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
-      endTime: PromiseOrValue<BigNumberish>,
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -389,6 +439,18 @@ export interface CampaignMinter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateCampaign(
+      campaignId: PromiseOrValue<BigNumberish>,
+      scene: PromiseOrValue<string>,
+      relatedApes: PromiseOrValue<string>[],
+      price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -418,8 +480,9 @@ export interface CampaignMinter extends BaseContract {
       scene: PromiseOrValue<string>,
       relatedApes: PromiseOrValue<string>[],
       price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
-      endTime: PromiseOrValue<BigNumberish>,
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -461,6 +524,18 @@ export interface CampaignMinter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    updateCampaign(
+      campaignId: PromiseOrValue<BigNumberish>,
+      scene: PromiseOrValue<string>,
+      relatedApes: PromiseOrValue<string>[],
+      price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -479,8 +554,9 @@ export interface CampaignMinter extends BaseContract {
       scene: PromiseOrValue<string>,
       relatedApes: PromiseOrValue<string>[],
       price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
-      endTime: PromiseOrValue<BigNumberish>,
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -520,6 +596,18 @@ export interface CampaignMinter extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateCampaign(
+      campaignId: PromiseOrValue<BigNumberish>,
+      scene: PromiseOrValue<string>,
+      relatedApes: PromiseOrValue<string>[],
+      price: PromiseOrValue<BigNumberish>,
+      claimStartTime: PromiseOrValue<BigNumberish>,
+      claimEndTime: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

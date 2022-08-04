@@ -28,6 +28,11 @@ contract GroupMinter is Ownable, Whitelist {
         recipient = recipient_;
     }
 
+    function setRecipient(address payable recipient_) external onlyOwner {
+        require(recipient_ != address(0), "Invalid address");
+        recipient = recipient_;
+    }
+
     function createGroup(
         address[] calldata apes,
         uint256 wlPrice,
@@ -50,39 +55,27 @@ contract GroupMinter is Ownable, Whitelist {
         group.maxPerWallet = maxPerWallet;
     }
 
-    function setRecipient(address payable recipient_) external onlyOwner {
-        require(recipient_ != address(0), "Invalid address");
-        recipient = recipient_;
-    }
-
-    // index mapping:
-    // 1 => wlPrice
-    // 2 => price
-    // 3 => wlStartTime
-    // 4 => startTime
-    // 5 => maxPerWallet
     function updateGroup(
         uint256 groupId,
-        uint256 index,
-        uint256 val
+        address[] calldata apes,
+        uint256 wlPrice,
+        uint256 price,
+        uint256 wlStartTime,
+        uint256 startTime,
+        uint256 maxPerWallet
     ) external onlyOwner {
-        require(index > 0 && index < 6, "Invalid index");
+        require(groupId <= totalGroup, "Invalid group id");
+        require(apes.length > 0, "No apes");
+        require(wlStartTime > block.timestamp && startTime > wlStartTime, "Invalid start time");
+        require(block.timestamp > groups[groupId].wlStartTime, "Cannot update after started");
 
-        if (index == 1) {
-            groups[groupId].wlPrice = val;
-        }
-        if (index == 2) {
-            groups[groupId].price = val;
-        }
-        if (index == 3) {
-            groups[groupId].wlStartTime = val;
-        }
-        if (index == 4) {
-            groups[groupId].startTime = val;
-        }
-        if (index == 5) {
-            groups[groupId].maxPerWallet = val;
-        }
+        Group storage group = groups[groupId];
+        group.apes = apes;
+        group.wlPrice = wlPrice;
+        group.price = price;
+        group.wlStartTime = wlStartTime;
+        group.startTime = startTime;
+        group.maxPerWallet = maxPerWallet;
     }
 
     function mintable(address ape) public view returns (uint256) {
@@ -120,7 +113,7 @@ contract GroupMinter is Ownable, Whitelist {
 
         uint256 paymentValue;
         uint256 startTime;
-        if (isWhitelisted(groupId, msg.sender)) {
+        if (isWhitelisted[groupId][msg.sender]) {
             paymentValue = count * group.wlPrice;
             startTime = group.wlStartTime;
         } else {
