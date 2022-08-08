@@ -31,7 +31,8 @@ import type {
 
 export interface StoryVotingInterface extends utils.Interface {
   functions: {
-    "createProposal(address[],address[],uint256,uint256,uint8)": FunctionFragment;
+    "character()": FunctionFragment;
+    "createProposal(uint16[],uint16[],uint256,uint256,uint8)": FunctionFragment;
     "getUserVotesLength(uint256,address)": FunctionFragment;
     "getVotes(uint256,uint8)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -39,16 +40,18 @@ export interface StoryVotingInterface extends utils.Interface {
     "redeem(uint256,uint256,uint256)": FunctionFragment;
     "redeem(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "scene()": FunctionFragment;
     "stateOf(uint256)": FunctionFragment;
     "totalProposal()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "userVotes(uint256,address,uint256)": FunctionFragment;
-    "vote(uint256,address[],uint256[],uint8)": FunctionFragment;
+    "vote(uint256,uint256[],uint8)": FunctionFragment;
     "votes(uint256,uint8)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "character"
       | "createProposal"
       | "getUserVotesLength"
       | "getVotes"
@@ -57,6 +60,7 @@ export interface StoryVotingInterface extends utils.Interface {
       | "redeem(uint256,uint256,uint256)"
       | "redeem(uint256)"
       | "renounceOwnership"
+      | "scene"
       | "stateOf"
       | "totalProposal"
       | "transferOwnership"
@@ -65,11 +69,12 @@ export interface StoryVotingInterface extends utils.Interface {
       | "votes"
   ): FunctionFragment;
 
+  encodeFunctionData(functionFragment: "character", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "createProposal",
     values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
@@ -104,6 +109,7 @@ export interface StoryVotingInterface extends utils.Interface {
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "scene", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "stateOf",
     values: [PromiseOrValue<BigNumberish>]
@@ -128,7 +134,6 @@ export interface StoryVotingInterface extends utils.Interface {
     functionFragment: "vote",
     values: [
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>[],
       PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>
     ]
@@ -138,6 +143,7 @@ export interface StoryVotingInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
 
+  decodeFunctionResult(functionFragment: "character", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createProposal",
     data: BytesLike
@@ -161,6 +167,7 @@ export interface StoryVotingInterface extends utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "scene", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stateOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalProposal",
@@ -220,9 +227,11 @@ export interface StoryVoting extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    character(overrides?: CallOverrides): Promise<[string]>;
+
     createProposal(
-      apes: PromiseOrValue<string>[],
-      newApes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
+      newClassIds: PromiseOrValue<BigNumberish>[],
       startTime: PromiseOrValue<BigNumberish>,
       endTime: PromiseOrValue<BigNumberish>,
       choices: PromiseOrValue<BigNumberish>,
@@ -273,6 +282,8 @@ export interface StoryVoting extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    scene(overrides?: CallOverrides): Promise<[string]>;
+
     stateOf(
       proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -291,9 +302,7 @@ export interface StoryVoting extends BaseContract {
       arg2: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber, number, boolean] & {
-        ape: string;
-        owner: string;
+      [BigNumber, BigNumber, number, boolean] & {
         tokenId: BigNumber;
         timestamp: BigNumber;
         support: number;
@@ -303,8 +312,7 @@ export interface StoryVoting extends BaseContract {
 
     vote(
       proposalId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
-      apeIds: PromiseOrValue<BigNumberish>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
       support: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -316,9 +324,11 @@ export interface StoryVoting extends BaseContract {
     ): Promise<[BigNumber]>;
   };
 
+  character(overrides?: CallOverrides): Promise<string>;
+
   createProposal(
-    apes: PromiseOrValue<string>[],
-    newApes: PromiseOrValue<string>[],
+    classIds: PromiseOrValue<BigNumberish>[],
+    newClassIds: PromiseOrValue<BigNumberish>[],
     startTime: PromiseOrValue<BigNumberish>,
     endTime: PromiseOrValue<BigNumberish>,
     choices: PromiseOrValue<BigNumberish>,
@@ -369,6 +379,8 @@ export interface StoryVoting extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  scene(overrides?: CallOverrides): Promise<string>;
+
   stateOf(
     proposalId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -387,9 +399,7 @@ export interface StoryVoting extends BaseContract {
     arg2: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, BigNumber, BigNumber, number, boolean] & {
-      ape: string;
-      owner: string;
+    [BigNumber, BigNumber, number, boolean] & {
       tokenId: BigNumber;
       timestamp: BigNumber;
       support: number;
@@ -399,8 +409,7 @@ export interface StoryVoting extends BaseContract {
 
   vote(
     proposalId: PromiseOrValue<BigNumberish>,
-    apes: PromiseOrValue<string>[],
-    apeIds: PromiseOrValue<BigNumberish>[],
+    tokenIds: PromiseOrValue<BigNumberish>[],
     support: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -412,9 +421,11 @@ export interface StoryVoting extends BaseContract {
   ): Promise<BigNumber>;
 
   callStatic: {
+    character(overrides?: CallOverrides): Promise<string>;
+
     createProposal(
-      apes: PromiseOrValue<string>[],
-      newApes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
+      newClassIds: PromiseOrValue<BigNumberish>[],
       startTime: PromiseOrValue<BigNumberish>,
       endTime: PromiseOrValue<BigNumberish>,
       choices: PromiseOrValue<BigNumberish>,
@@ -463,6 +474,8 @@ export interface StoryVoting extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
+    scene(overrides?: CallOverrides): Promise<string>;
+
     stateOf(
       proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -481,9 +494,7 @@ export interface StoryVoting extends BaseContract {
       arg2: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber, number, boolean] & {
-        ape: string;
-        owner: string;
+      [BigNumber, BigNumber, number, boolean] & {
         tokenId: BigNumber;
         timestamp: BigNumber;
         support: number;
@@ -493,8 +504,7 @@ export interface StoryVoting extends BaseContract {
 
     vote(
       proposalId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
-      apeIds: PromiseOrValue<BigNumberish>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
       support: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -518,9 +528,11 @@ export interface StoryVoting extends BaseContract {
   };
 
   estimateGas: {
+    character(overrides?: CallOverrides): Promise<BigNumber>;
+
     createProposal(
-      apes: PromiseOrValue<string>[],
-      newApes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
+      newClassIds: PromiseOrValue<BigNumberish>[],
       startTime: PromiseOrValue<BigNumberish>,
       endTime: PromiseOrValue<BigNumberish>,
       choices: PromiseOrValue<BigNumberish>,
@@ -562,6 +574,8 @@ export interface StoryVoting extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    scene(overrides?: CallOverrides): Promise<BigNumber>;
+
     stateOf(
       proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -583,8 +597,7 @@ export interface StoryVoting extends BaseContract {
 
     vote(
       proposalId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
-      apeIds: PromiseOrValue<BigNumberish>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
       support: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -597,9 +610,11 @@ export interface StoryVoting extends BaseContract {
   };
 
   populateTransaction: {
+    character(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     createProposal(
-      apes: PromiseOrValue<string>[],
-      newApes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
+      newClassIds: PromiseOrValue<BigNumberish>[],
       startTime: PromiseOrValue<BigNumberish>,
       endTime: PromiseOrValue<BigNumberish>,
       choices: PromiseOrValue<BigNumberish>,
@@ -641,6 +656,8 @@ export interface StoryVoting extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    scene(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     stateOf(
       proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -662,8 +679,7 @@ export interface StoryVoting extends BaseContract {
 
     vote(
       proposalId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
-      apeIds: PromiseOrValue<BigNumberish>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
       support: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

@@ -13,22 +13,19 @@ contract StoryVoting is Ownable {
     }
 
     struct Proposal {
-        address[] apes;
+        uint16[] classIds;
         uint8 choices;
         uint8 finalizedChoice;
         bool canceled;
         bool finalized;
         uint256 startTime;
         uint256 endTime;
-        mapping(address => address) newApes;
-        mapping(address => bool) isVotable;
-        // choice => ape address => votes
-        mapping(uint8 => mapping(address => uint256)) supportedApeVotes;
+        mapping(uint16 => uint16) newClassIds;
+        // choice => character classId => votes
+        mapping(uint8 => mapping(uint16 => uint256)) supportedVotes;
     }
 
     struct Vote {
-        address ape;
-        address owner;
         uint256 tokenId;
         uint256 timestamp;
         uint8 support;
@@ -36,6 +33,8 @@ contract StoryVoting is Ownable {
     }
 
     uint256 public totalProposal = 0;
+    address public character;
+    address public scene;
 
     mapping(uint256 => Proposal) public proposals;
 
@@ -51,71 +50,69 @@ contract StoryVoting is Ownable {
     // proposal id => support choice => address => votes
     // mapping(uint256 => mapping(uint8 => mapping(address => uint256)))
 
+    constructor(address character_, address scene_) {
+        character = character_;
+        scene = scene_;
+    }
+
     function createProposal(
-        address[] calldata apes,
-        address[] calldata newApes,
+        uint16[] calldata classIds,
+        uint16[] calldata newClassIds,
         uint256 startTime,
         uint256 endTime,
         uint8 choices
     ) external onlyOwner {
-        require(apes.length > 0, "No apes");
-        require(apes.length == newApes.length, "Invalid new apes length");
+        require(classIds.length > 0, "No character");
+        require(classIds.length == newClassIds.length, "Invalid new characters length");
         require(choices >= 2, "Invalid choices");
         require(endTime > block.timestamp && startTime < endTime, "Invalid endTime");
 
         totalProposal += 1;
         Proposal storage proposal = proposals[totalProposal];
-        proposal.apes = apes;
+        proposal.classIds = classIds;
         proposal.startTime = startTime;
         proposal.endTime = endTime;
         proposal.choices = choices;
-        for (uint256 i = 0; i < apes.length; i++) {
-            proposal.newApes[apes[i]] = newApes[i];
-            proposal.isVotable[apes[i]] = true;
+        for (uint256 i = 0; i < classIds.length; i++) {
+            proposal.newClassIds[classIds[i]] = newClassIds[i];
         }
     }
 
     function vote(
         uint256 proposalId,
-        address[] calldata apes,
-        uint256[] calldata apeIds,
+        uint256[] calldata tokenIds,
         uint8 support
     ) external {
-        require(apes.length == apeIds.length, "Invalid params");
+        require(tokenIds.length > 0, "Invalid tokens");
         Proposal storage proposal = proposals[proposalId];
 
         require(stateOf(proposalId) == ProposalState.Active, "Voting is not active");
 
-        for (uint256 i = 0; i < apes.length; i++) {
-            require(proposal.isVotable[apes[i]], "Not votable ape");
-            INervape(apes[i]).transferFrom(msg.sender, address(this), apeIds[i]);
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            uint16 classId = INervape(character).classOf(tokenIds[i]);
+            require(proposal.newClassIds[classId] > 0, "Not votable character");
+
+            INervape(character).transferFrom(msg.sender, address(this), tokenIds[i]);
 
             userVotes[proposalId][msg.sender].push(
-                Vote({
-                    ape: apes[i],
-                    tokenId: apeIds[i],
-                    owner: msg.sender,
-                    timestamp: block.timestamp,
-                    support: support,
-                    redeemed: false
-                })
+                Vote({ tokenId: tokenIds[i], timestamp: block.timestamp, support: support, redeemed: false })
             );
 
-            proposal.supportedApeVotes[support][apes[i]] += 1;
+            proposal.supportedVotes[support][classId] += 1;
         }
-        votes[proposalId][support] += apes.length;
+        votes[proposalId][support] += tokenIds.length;
     }
 
     function getVotes(uint256 proposalId, uint8 support) public view returns (uint256) {
         Proposal storage proposal = proposals[proposalId];
-        uint256 apeVotes = proposal.supportedApeVotes[support][proposal.apes[0]];
-        for (uint256 i = 1; i < proposal.apes.length; i++) {
-            if (apeVotes > proposal.supportedApeVotes[support][proposal.apes[i]]) {
-                apeVotes = proposal.supportedApeVotes[support][proposal.apes[i]];
+        uint256 groupVotes = proposal.supportedVotes[support][proposal.classIds[0]];
+        for (uint256 i = 1; i < proposal.classIds.length; i++) {
+            if (groupVotes > proposal.supportedVotes[support][proposal.classIds[i]]) {
+                groupVotes = proposal.supportedVotes[support][proposal.classIds[i]];
             }
         }
-        uint256 remainingVotes = votes[proposalId][support] - apeVotes * proposal.apes.length;
-        return (apeVotes << 128) + uint128(remainingVotes);
+        uint256 remainingVotes = votes[proposalId][support] - groupVotes * proposal.classIds.length;
+        return (groupVotes << 128) + uint128(remainingVotes);
     }
 
     function _finalize(uint256 proposalId) internal {
@@ -193,19 +190,20 @@ contract StoryVoting is Ownable {
         _finalize(proposalId);
 
         Vote[] storage _votes = userVotes[proposalId][msg.sender];
-        require(end <= _votes.length, "Invalid end");
+        require(end <= _votes.length, "Invalid end index");
 
         for (uint256 i = start; i < end; i++) {
             if (_votes[i].redeemed) {
                 continue;
             }
             if (proposal.finalized && _votes[i].support == proposal.finalizedChoice) {
-                // burn ape and mint new limited Ape
-                INervape(proposal.newApes[_votes[i].ape]).mint(_votes[i].owner);
+                uint16 classId = INervape(character).classOf(_votes[i].tokenId);
+                // burn ape and mint new Ape
+                INervape(character).mint(proposal.newClassIds[classId], msg.sender);
                 _votes[i].redeemed = true;
             } else {
                 // withdraw back ape
-                INervape(_votes[i].ape).transferFrom(address(this), _votes[i].owner, _votes[i].tokenId);
+                INervape(character).transferFrom(address(this), msg.sender, _votes[i].tokenId);
                 _votes[i].redeemed = true;
             }
         }

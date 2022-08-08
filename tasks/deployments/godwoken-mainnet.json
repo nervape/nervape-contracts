@@ -1,5 +1,32 @@
 {
-  "Nervape": "",
-  "Factory": "",
-  "Minter": ""
+  "Character": "",
+  "Scene": "",
+  "Item": "",
+  "GroupMinter": "",
+  "CampaignMinter": "",
+  "StoryVoting": "",
+  "groups": [
+    {
+      "characterClasses": [],
+      "price": "10 CKB",
+      "wlStartTime": 0,
+      "startTime": 0
+    }
+  ],
+  "campaigns": [
+    {
+      "characterClasses": [],
+      "sceneClass": 0,
+      "price": "10 CKB",
+      "claimStartTime": 0,
+      "claimEndTime": 0,
+      "startTime": 0
+    }
+  ],
+  "proposals": [
+    {
+      "classes": [],
+      "newClasses": []
+    }
+  ]
 }

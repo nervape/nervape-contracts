@@ -2,6 +2,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "character_",
+        "type": "address"
+      },
+      {
         "internalType": "address payable",
         "name": "recipient_",
         "type": "address"
@@ -48,11 +53,24 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "character",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "apes",
-        "type": "address[]"
+        "internalType": "uint16[]",
+        "name": "classIds",
+        "type": "uint16[]"
       },
       {
         "internalType": "uint256",
@@ -83,6 +101,50 @@
     "name": "createGroup",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "groupId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getGroup",
+    "outputs": [
+      {
+        "internalType": "uint16[]",
+        "name": "classIds",
+        "type": "uint16[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "wlPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "wlStartTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxPerWallet",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -169,9 +231,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "ape",
-        "type": "address"
+        "internalType": "uint16",
+        "name": "classId",
+        "type": "uint16"
       }
     ],
     "name": "mintable",
@@ -193,12 +255,12 @@
         "type": "uint256"
       }
     ],
-    "name": "mintableApes",
+    "name": "mintableClasses",
     "outputs": [
       {
-        "internalType": "address[]",
-        "name": "apes",
-        "type": "address[]"
+        "internalType": "uint16[]",
+        "name": "classIds",
+        "type": "uint16[]"
       },
       {
         "internalType": "uint256",
@@ -336,9 +398,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "address[]",
-        "name": "apes",
-        "type": "address[]"
+        "internalType": "uint16[]",
+        "name": "classIds",
+        "type": "uint16[]"
       },
       {
         "internalType": "uint256",

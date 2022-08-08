@@ -2,6 +2,16 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "character_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "scene_",
+        "type": "address"
+      },
+      {
         "internalType": "address payable",
         "name": "recipient_",
         "type": "address"
@@ -40,9 +50,9 @@
     "name": "campaigns",
     "outputs": [
       {
-        "internalType": "address",
-        "name": "scene",
-        "type": "address"
+        "internalType": "uint16",
+        "name": "sceneClassId",
+        "type": "uint16"
       },
       {
         "internalType": "uint256",
@@ -74,6 +84,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "character",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -94,14 +117,32 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "scene",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "campaignId",
+        "type": "uint256"
       },
       {
-        "internalType": "address[]",
-        "name": "relatedApes",
-        "type": "address[]"
+        "internalType": "uint256[][]",
+        "name": "groupedTokenIds",
+        "type": "uint256[][]"
+      }
+    ],
+    "name": "claimMany",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16[]",
+        "name": "characterClassIds",
+        "type": "uint16[]"
+      },
+      {
+        "internalType": "uint16",
+        "name": "sceneClassId",
+        "type": "uint16"
       },
       {
         "internalType": "uint256",
@@ -192,9 +233,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "uint16",
         "name": "",
-        "type": "address"
+        "type": "uint16"
       },
       {
         "internalType": "uint256",
@@ -231,6 +272,19 @@
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "scene",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -280,14 +334,14 @@
         "type": "uint256"
       },
       {
-        "internalType": "address",
-        "name": "scene",
-        "type": "address"
+        "internalType": "uint16[]",
+        "name": "characterClassIds",
+        "type": "uint16[]"
       },
       {
-        "internalType": "address[]",
-        "name": "relatedApes",
-        "type": "address[]"
+        "internalType": "uint16",
+        "name": "sceneClassId",
+        "type": "uint16"
       },
       {
         "internalType": "uint256",

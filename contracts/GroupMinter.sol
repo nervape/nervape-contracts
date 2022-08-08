@@ -7,7 +7,7 @@ import "./INervape.sol";
 
 contract GroupMinter is Ownable, Whitelist {
     struct Group {
-        address[] apes;
+        uint16[] classIds;
         uint256 wlPrice;
         uint256 price;
         uint256 wlStartTime;
@@ -15,6 +15,7 @@ contract GroupMinter is Ownable, Whitelist {
         uint256 maxPerWallet;
     }
 
+    address public character;
     address payable public recipient;
     uint256 private nonce = 0;
     uint256 public totalGroup = 0;
@@ -24,7 +25,8 @@ contract GroupMinter is Ownable, Whitelist {
     // groupId => user => count
     mapping(uint256 => mapping(address => uint256)) public minted;
 
-    constructor(address payable recipient_) {
+    constructor(address character_, address payable recipient_) {
+        character = character_;
         recipient = recipient_;
     }
 
@@ -34,20 +36,20 @@ contract GroupMinter is Ownable, Whitelist {
     }
 
     function createGroup(
-        address[] calldata apes,
+        uint16[] calldata classIds,
         uint256 wlPrice,
         uint256 price,
         uint256 wlStartTime,
         uint256 startTime,
         uint256 maxPerWallet
     ) external onlyOwner {
-        require(apes.length > 0, "No apes");
+        require(classIds.length > 0, "No class");
         require(wlStartTime > block.timestamp && startTime > wlStartTime, "Invalid start time");
 
         totalGroup += 1;
 
         Group storage group = groups[totalGroup];
-        group.apes = apes;
+        group.classIds = classIds;
         group.wlPrice = wlPrice;
         group.price = price;
         group.wlStartTime = wlStartTime;
@@ -57,7 +59,7 @@ contract GroupMinter is Ownable, Whitelist {
 
     function updateGroup(
         uint256 groupId,
-        address[] calldata apes,
+        uint16[] calldata classIds,
         uint256 wlPrice,
         uint256 price,
         uint256 wlStartTime,
@@ -65,12 +67,12 @@ contract GroupMinter is Ownable, Whitelist {
         uint256 maxPerWallet
     ) external onlyOwner {
         require(groupId <= totalGroup, "Invalid group id");
-        require(apes.length > 0, "No apes");
+        require(classIds.length > 0, "No class");
+        require(block.timestamp < groups[groupId].wlStartTime, "Cannot update after started");
         require(wlStartTime > block.timestamp && startTime > wlStartTime, "Invalid start time");
-        require(block.timestamp > groups[groupId].wlStartTime, "Cannot update after started");
 
         Group storage group = groups[groupId];
-        group.apes = apes;
+        group.classIds = classIds;
         group.wlPrice = wlPrice;
         group.price = price;
         group.wlStartTime = wlStartTime;
@@ -78,26 +80,48 @@ contract GroupMinter is Ownable, Whitelist {
         group.maxPerWallet = maxPerWallet;
     }
 
-    function mintable(address ape) public view returns (uint256) {
-        return INervape(ape).maxSupply() - INervape(ape).totalSupply();
-    }
-
-    function mintableApes(uint256 groupId)
+    function getGroup(uint256 groupId)
         public
         view
         returns (
-            address[] memory apes,
+            uint16[] memory classIds,
+            uint256 wlPrice,
+            uint256 price,
+            uint256 wlStartTime,
+            uint256 startTime,
+            uint256 maxPerWallet
+        )
+    {
+        classIds = groups[groupId].classIds;
+        wlPrice = groups[groupId].wlPrice;
+        price = groups[groupId].price;
+        wlStartTime = groups[groupId].wlStartTime;
+        startTime = groups[groupId].startTime;
+        maxPerWallet = groups[groupId].maxPerWallet;
+    }
+
+    function mintable(uint16 classId) public view returns (uint256) {
+        uint16 unminted = INervape(character).maxSupplyOfClass(classId) -
+            INervape(character).totalSupplyOfClass(classId);
+        return uint256(unminted);
+    }
+
+    function mintableClasses(uint256 groupId)
+        public
+        view
+        returns (
+            uint16[] memory classIds,
             uint256 mintableLength,
             uint256 maxMintable
         )
     {
-        apes = new address[](groups[groupId].apes.length);
+        classIds = new uint16[](groups[groupId].classIds.length);
         uint256 i = 0;
-        while (i < groups[groupId].apes.length) {
-            uint256 mintableCount = mintable(groups[groupId].apes[i]);
+        while (i < groups[groupId].classIds.length) {
+            uint256 mintableCount = mintable(groups[groupId].classIds[i]);
             if (mintableCount > 0) {
                 maxMintable += mintableCount;
-                apes[mintableLength] = groups[groupId].apes[i];
+                classIds[mintableLength] = groups[groupId].classIds[i];
                 mintableLength++;
             }
             i++;
@@ -131,11 +155,11 @@ contract GroupMinter is Ownable, Whitelist {
 
         uint256 i = 0;
         while (i < count) {
-            (address[] memory apes, uint256 mintableLength, uint256 maxMintable) = mintableApes(groupId);
-            require(maxMintable >= count - i, "No apes left");
+            (uint16[] memory classIds, uint256 mintableLength, uint256 maxMintable) = mintableClasses(groupId);
+            require(maxMintable >= count - i, "No character class left");
             uint256 base = (rand >> (256 - (i + 1) * 8)) & (2**(8 * (i + 1)) - 1);
             uint256 index = base % mintableLength;
-            INervape(apes[index]).mint(msg.sender);
+            INervape(character).mint(classIds[index], msg.sender);
             i++;
         }
     }

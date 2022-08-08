@@ -49,17 +49,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "BridgedNervape",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BridgedNervape__factory>;
-    getContractFactory(
       name: "CampaignMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CampaignMinter__factory>;
-    getContractFactory(
-      name: "Greeter",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Greeter__factory>;
     getContractFactory(
       name: "GroupMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -76,14 +68,6 @@ declare module "hardhat/types/runtime" {
       name: "Nervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Nervape__factory>;
-    getContractFactory(
-      name: "NervapeCharacter",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NervapeCharacter__factory>;
-    getContractFactory(
-      name: "NervapeFactory",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.NervapeFactory__factory>;
     getContractFactory(
       name: "Sample",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -143,20 +127,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "BridgedNervape",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.BridgedNervape>;
-    getContractAt(
       name: "CampaignMinter",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.CampaignMinter>;
-    getContractAt(
-      name: "Greeter",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Greeter>;
     getContractAt(
       name: "GroupMinter",
       address: string,
@@ -177,16 +151,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Nervape>;
-    getContractAt(
-      name: "NervapeCharacter",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.NervapeCharacter>;
-    getContractAt(
-      name: "NervapeFactory",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.NervapeFactory>;
     getContractAt(
       name: "Sample",
       address: string,

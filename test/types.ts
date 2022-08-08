@@ -1,12 +1,11 @@
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import type { Fixture } from "ethereum-waffle";
 
-import type { Factory, Greeter } from "../src/types";
+// import type { Factory, Greeter } from "../src/types";
 
 declare module "mocha" {
   export interface Context {
-    greeter: Greeter;
-    factory: Factory;
+    // greeter: Greeter;
     loadFixture: <T>(fixture: Fixture<T>) => Promise<T>;
     signers: Signers;
   }

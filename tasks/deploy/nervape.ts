@@ -8,8 +8,6 @@ import type {
   GroupMinter,
   GroupMinter__factory,
   Nervape,
-  NervapeFactory,
-  NervapeFactory__factory,
   Nervape__factory,
   StoryVoting,
   StoryVoting__factory,
@@ -20,91 +18,113 @@ function getDeployment(network: string, name?: string) {
   return name ? deployment[name] : deployment;
 }
 
-// task("deploy:Nervape").setAction(async function (taskArguments: TaskArguments, { ethers }) {
-//   const signers: SignerWithAddress[] = await ethers.getSigners();
-//   const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
-//   const nervape: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).deploy();
-//   await nervape.deployed();
-//   console.log("Nervape deployed to: ", nervape.address);
-// });
-
-task("deploy:Factory").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+task("deploy:character").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
   const signers: SignerWithAddress[] = await ethers.getSigners();
-  const nervapeFactory: NervapeFactory__factory = <NervapeFactory__factory>(
-    await ethers.getContractFactory("NervapeFactory")
+  const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+  const nervape: Nervape = <Nervape>(
+    await nervapeFactory.connect(signers[0]).deploy("Nervape ", "NAPE", "https://nervape.com/nape/")
   );
-  const factory: NervapeFactory = <NervapeFactory>await nervapeFactory.connect(signers[0]).deploy();
-  await factory.deployed();
-  console.log("NervapeFactory deployed to: ", factory.address);
+  await nervape.deployed();
+  console.log("Nervape character deployed to: ", nervape.address);
+  for (let id = 1; id <= 7; id++) {
+    await nervape.addNewClass(256);
+    console.log("add bridge class: ", id);
+  }
+});
+
+task("deploy:addClass")
+  .addParam("maxsupply", "max supply of class")
+  .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+    const signers: SignerWithAddress[] = await ethers.getSigners();
+    const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+    const nervape: Nervape = <Nervape>(
+      await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Character"))
+    );
+    const tx = await nervape.addNewClass(taskArguments.maxsupply);
+    const receipt = await tx.wait();
+    if (receipt.status) {
+      const classId = await nervape.currentClassId();
+      console.log("added class ", classId);
+    } else {
+      console.log("failed to add new class");
+    }
+  });
+
+task("deploy:scene").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+  const nervape: Nervape = <Nervape>(
+    await nervapeFactory.connect(signers[0]).deploy("Nervape Scene", "NSCENE", "https://nervape.com/scene/")
+  );
+  await nervape.deployed();
+  console.log("Nervape scene deployed to: ", nervape.address);
+  await nervape.addNewClass(256); // groovy party
+  console.log("add scene groovy party");
+  await nervape.addNewClass(128); // story 001
+  console.log("add scene story 001");
+});
+
+task("deploy:item").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+  const nervape: Nervape = <Nervape>(
+    await nervapeFactory.connect(signers[0]).deploy("Nervape Item", "NITEM", "https://nervape.com/item/")
+  );
+  await nervape.deployed();
+  console.log("Nervape item deployed to: ", nervape.address);
 });
 
 task("deploy:GroupMinter")
+  .addParam("character", "character contract address")
   .addParam("recipient", "payment recipient")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
     const signers: SignerWithAddress[] = await ethers.getSigners();
     const minterFactory: GroupMinter__factory = <GroupMinter__factory>await ethers.getContractFactory("GroupMinter");
-    const minter: GroupMinter = <GroupMinter>await minterFactory.connect(signers[0]).deploy(taskArguments.recipient);
+    const minter: GroupMinter = <GroupMinter>(
+      await minterFactory.connect(signers[0]).deploy(taskArguments.character, taskArguments.recipient)
+    );
     await minter.deployed();
     console.log("GroupMinter deployed to: ", minter.address);
   });
 
+task("Nervape:setMinter")
+  .addParam("nervape", "contract address of nervape")
+  .addParam("minter", "minter of nervape")
+  .setAction(async function (taskArguments: TaskArguments, { ethers }) {
+    const signers: SignerWithAddress[] = await ethers.getSigners();
+    const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+    const nervape: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(taskArguments.nervape);
+    await nervape.setMinter(taskArguments.minter);
+    console.log("minter added");
+  });
+
 task("deploy:CampaignMinter")
+  .addParam("character", "character contract address")
+  .addParam("scene", "scene contract address")
   .addParam("recipient", "payment recipient")
   .setAction(async function (taskArguments: TaskArguments, { ethers }) {
+    const { character, scene, recipient } = taskArguments;
     const signers: SignerWithAddress[] = await ethers.getSigners();
     const minterFactory: CampaignMinter__factory = <CampaignMinter__factory>(
       await ethers.getContractFactory("CampaignMinter")
     );
     const minter: CampaignMinter = <CampaignMinter>(
-      await minterFactory.connect(signers[0]).deploy(taskArguments.recipient)
+      await minterFactory.connect(signers[0]).deploy(character, scene, recipient)
     );
     await minter.deployed();
     console.log("CampaignMinter deployed to: ", minter.address);
   });
 
 task("deploy:StoryVoting").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const { character, scene } = taskArguments;
   const signers: SignerWithAddress[] = await ethers.getSigners();
   const storyVotingFactory: StoryVoting__factory = <StoryVoting__factory>await ethers.getContractFactory("StoryVoting");
-  const storyVoting: StoryVoting = <StoryVoting>await storyVotingFactory.connect(signers[0]).deploy();
+  const storyVoting: StoryVoting = <StoryVoting>await storyVotingFactory.connect(signers[0]).deploy(character, scene);
   await storyVoting.deployed();
   console.log("StoryVoting deployed to: ", storyVoting.address);
 });
 
-task("factory:createCollection")
-  .addParam("name", "Ape NFT name")
-  .addParam("symbol", "Ape NFT symbol")
-  .addParam("uri", "Ape NFT baseURI")
-  .addParam("owner", "APE NFT owner")
-  .addParam("maxsupply", "APE max supply")
-  .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
-    console.log(taskArguments);
-    const signers: SignerWithAddress[] = await ethers.getSigners();
-    const nervapeFactory: NervapeFactory__factory = <NervapeFactory__factory>(
-      await ethers.getContractFactory("NervapeFactory")
-    );
-    const factory: NervapeFactory = <NervapeFactory>(
-      await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "NervapeFactory"))
-    );
-
-    const tx = await factory.createCollection(
-      taskArguments.name,
-      taskArguments.symbol,
-      taskArguments.uri,
-      getDeployment(network.name, "GroupMinter"),
-      taskArguments.owner,
-      taskArguments.maxsupply,
-    );
-    const receipt = await tx.wait();
-    if (receipt.status === 1) {
-      console.log("receipt = ", receipt.events);
-      const event = receipt.events?.find(e => e.event === "CollectionCreated");
-      console.log("NFT created to: ", event?.args?.collection);
-    } else {
-      console.log("transact failed");
-    }
-  });
-
-task("groupMinter:createGroup")
+task("GroupMinter:createGroup")
   .addParam("group", "group index")
   .addParam("wlprice", "whitelist mint price")
   .addParam("price", "normal mint price each")
@@ -116,9 +136,9 @@ task("groupMinter:createGroup")
     const price = ethers.utils.parseEther(taskArguments.price);
     const groupIndex = parseInt(taskArguments.group);
     const group = getDeployment(network.name, "groups")[groupIndex];
-    const apeAddresses = group.apes.map((a: any) => a && a.address);
+    const classIds = group.characterClasses;
 
-    console.log("apes: ", group.apes);
+    console.log("classes: ", classIds);
     console.log("price: ", taskArguments.price);
     console.log("WL price: ", taskArguments.wlprice);
     console.log("WL start time: ", taskArguments.wlstarttime);
@@ -132,7 +152,7 @@ task("groupMinter:createGroup")
       await minterFactory.connect(owner).attach(getDeployment(network.name, "GroupMinter"))
     );
     const tx = await minter.createGroup(
-      apeAddresses,
+      classIds,
       wlprice,
       price,
       taskArguments.wlstarttime,
@@ -140,11 +160,10 @@ task("groupMinter:createGroup")
       taskArguments.maxperwallet,
     );
     const receipt = await tx.wait();
-    console.log("receipt = ", receipt);
-    console.log("Minter Group %d created", groupIndex + 1);
+    console.log("Minter Group %d created at %s", groupIndex + 1, receipt.transactionHash);
   });
 
-task("campaignMinter:createCampaign")
+task("CampaignMinter:createCampaign")
   .addParam("campaign", "campaign index")
   .addParam("price", "normal mint price each")
   .addParam("claimstarttime", "claim start time")
@@ -153,11 +172,11 @@ task("campaignMinter:createCampaign")
   .addParam("maxperwallet", "max mint per wallet")
   .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
     const price = ethers.utils.parseEther(taskArguments.price);
-    const campaignIndex = parseInt(taskArguments.group);
+    const campaignIndex = parseInt(taskArguments.campaign);
     const campaign = getDeployment(network.name, "campaigns")[campaignIndex];
 
+    console.log("classes: ", campaign.characterClasses);
     console.log("scene: ", campaign.scene);
-    console.log("apes: ", campaign.relatedApes);
     console.log("price: ", taskArguments.price);
     console.log("claim start time: ", taskArguments.claimstarttime);
     console.log("claim end time: ", taskArguments.claimendtime);
@@ -174,8 +193,8 @@ task("campaignMinter:createCampaign")
     );
 
     const tx = await campaignMinter.createCampaign(
+      campaign.characterClasses,
       campaign.scene,
-      campaign.relatedApes,
       price,
       taskArguments.claimstarttime,
       taskArguments.claimendtime,
@@ -187,17 +206,16 @@ task("campaignMinter:createCampaign")
     console.log("Campaign %d created", campaignIndex + 1);
   });
 
-task("storyVoting:createProposal")
-  .addParam("apes", "votable apes")
-  .addParam("newapes", "new apes")
+task("StoryVoting:createProposal")
+  .addParam("proposal", "proposal index")
   .addParam("starttime", "start time")
   .addParam("endtime", "end time")
   .addParam("choices", "choices")
   .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
-    const campaign = getDeployment(network.name, "proposals")[campaignIndex];
-    console.log("apes: ", taskArguments.apes);
-    console.log("new apes: ", taskArguments.newapes);
-    console.log("price: ", taskArguments.price);
+    const proposalIndex = parseInt(taskArguments.proposal);
+    const proposal = getDeployment(network.name, "proposals")[proposalIndex];
+    console.log("classes: ", proposal.classes);
+    console.log("new classes: ", proposal.newClasses);
     console.log("start time: ", taskArguments.starttime);
     console.log("end time: ", taskArguments.endtime);
 
@@ -211,30 +229,16 @@ task("storyVoting:createProposal")
     );
 
     const tx = await storyVoting.createProposal(
-      [],
-      [],
+      proposal.classes,
+      proposal.newClasses,
       taskArguments.starttime,
       taskArguments.endtime,
       taskArguments.choices,
     );
     const receipt = await tx.wait();
     console.log("receipt = ", receipt);
-    // console.log("Voting proposal %d created", campaignIndex + 1);
+    console.log("Voting proposal %d created", proposalIndex + 1);
   });
-
-// task("deploy:Minter:mintableApes")
-//   .addParam("group", "group index")
-//   .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
-//     const groupIndex = parseInt(taskArguments.group);
-//     const signers: SignerWithAddress[] = await ethers.getSigners();
-//     const owner = signers[0];
-//     const minterFactory: Minter__factory = <Minter__factory>await ethers.getContractFactory("Minter");
-//     const minter: Minter = <Minter>await minterFactory.attach(getDeployment(network.name, "Minter"));
-//     const result = await minter.mintableApes(groupIndex);
-//     console.log("apes: ", result.apes);
-//     console.log("mintableLength: ", result.mintableLength.toNumber());
-//     console.log("maxMintable: ", result.maxMintable.toNumber());
-//   });
 
 task("deploy:test:send-tx").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
   // const signers: SignerWithAddress[] = await ethers.getSigners();

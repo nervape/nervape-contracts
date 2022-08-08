@@ -1,59 +1,32 @@
 {
-  "Sample": "0xD0Df7A0C50D9c222cc66208D81549B2D96108bd9",
-  "CollectionFactory": "0xB027eb986Aefc6D7f3A203336fBA9b6d85e337F5",
-  "GroupMinter": "0xFfd0566A3536b06d2566FEcDfDaD559F80e36114",
-  "CampaignMinter": "0xFfd0566A3536b06d2566FEcDfDaD559F80e36114",
-  "NFTs": [
-    {
-      "name": "GROOVY Developer",
-      "symbol": "GD",
-      "address": "0x8f7B2805F24bF3fb98295dBea8d71bDCa853369f",
-      "maxSupply": 256
-    },
-    {
-      "name": "GROOVY Rookie",
-      "symbol": "GR",
-      "address": "0x9Ca1516D07E86f3430A8E632Ae5fd51080aDfD8E",
-      "maxSupply": 256
-    },
-    {
-      "name": "GROOVY Miner",
-      "symbol": "GM",
-      "address": "0x4d8949102dDF9FB37cd104258d752faD70333BD0",
-      "maxSupply": 256
-    }
-  ],
+  "Character": "0x6317aC29EaB2F9cB71Dd2DAFe07B0AAc7e17c09f",
+  "Scene": "0x56672EDB0D82b73646387c951Fa1440675543839",
+  "Item": "",
+  "GroupMinter": "0x519e11Ad77D0bd34107ac00aea7fe48d6C459533",
+  "CampaignMinter": "",
+  "StoryVoting": "",
   "groups": [
     {
-      "collections": [
-        "0x8f7B2805F24bF3fb98295dBea8d71bDCa853369f",
-        "0x9Ca1516D07E86f3430A8E632Ae5fd51080aDfD8E",
-        "0x4d8949102dDF9FB37cd104258d752faD70333BD0"
-      ],
+      "characterClasses": [8, 9, 10, 11],
       "price": "10 CKB",
-      "wlStartTime": 1657870942,
-      "startTime": 1658043773,
-      "tx": "0x93fbf2248cfca9d525e6d97d98cbc68b54c229b4aa132a474a43d1413d988dbd"
+      "wlStartTime": 1659948693,
+      "startTime": 1660121493
     }
   ],
   "campaigns": [
     {
-      "relatedApes": [
-        "0x8f7B2805F24bF3fb98295dBea8d71bDCa853369f",
-        "0x9Ca1516D07E86f3430A8E632Ae5fd51080aDfD8E",
-        "0x4d8949102dDF9FB37cd104258d752faD70333BD0"
-      ],
-      "scene": "0x4d8949102dDF9FB37cd104258d752faD70333BD0",
+      "characterClasses": [],
+      "sceneClass": 0,
       "price": "10 CKB",
-      "claimStartTime": 1659513273,
-      "claimEndTime": 1659513273,
-      "startTime": 1659513273
+      "claimStartTime": 0,
+      "claimEndTime": 0,
+      "startTime": 0
     }
   ],
   "proposals": [
     {
-      "apes": [],
-      "newApes": []
+      "classes": [],
+      "newClasses": []
     }
   ]
 }

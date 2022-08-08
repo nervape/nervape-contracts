@@ -4,7 +4,11 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 interface INervape is IERC721Enumerable {
-    function mint(address to) external;
+    function mint(uint16 classId, address to) external;
 
-    function maxSupply() external view returns (uint256);
+    function totalSupplyOfClass(uint16 classId) external view returns (uint16);
+
+    function maxSupplyOfClass(uint16 classId) external view returns (uint16);
+
+    function classOf(uint256 tokenId) external pure returns (uint16);
 }

@@ -128,6 +128,25 @@ const _abi = [
         type: "uint256",
       },
     ],
+    name: "classOf",
+    outputs: [
+      {
+        internalType: "uint16",
+        name: "",
+        type: "uint16",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
     name: "getApproved",
     outputs: [
       {
@@ -164,13 +183,19 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "maxSupply",
+    inputs: [
+      {
+        internalType: "uint16",
+        name: "classId",
+        type: "uint16",
+      },
+    ],
+    name: "maxSupplyOfClass",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "uint16",
         name: "",
-        type: "uint256",
+        type: "uint16",
       },
     ],
     stateMutability: "view",
@@ -178,6 +203,11 @@ const _abi = [
   },
   {
     inputs: [
+      {
+        internalType: "uint16",
+        name: "classId",
+        type: "uint16",
+      },
       {
         internalType: "address",
         name: "to",
@@ -347,6 +377,25 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint16",
+        name: "classId",
+        type: "uint16",
+      },
+    ],
+    name: "totalSupplyOfClass",
+    outputs: [
+      {
+        internalType: "uint16",
+        name: "",
+        type: "uint16",
       },
     ],
     stateMutability: "view",

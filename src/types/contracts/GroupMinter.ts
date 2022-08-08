@@ -33,12 +33,14 @@ import type {
 export interface GroupMinterInterface extends utils.Interface {
   functions: {
     "add(uint256,address[])": FunctionFragment;
-    "createGroup(address[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "character()": FunctionFragment;
+    "createGroup(uint16[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "getGroup(uint256)": FunctionFragment;
     "groups(uint256)": FunctionFragment;
     "isWhitelisted(uint256,address)": FunctionFragment;
     "mint(uint256,uint256)": FunctionFragment;
-    "mintable(address)": FunctionFragment;
-    "mintableApes(uint256)": FunctionFragment;
+    "mintable(uint16)": FunctionFragment;
+    "mintableClasses(uint256)": FunctionFragment;
     "minted(uint256,address)": FunctionFragment;
     "owner()": FunctionFragment;
     "recipient()": FunctionFragment;
@@ -47,18 +49,20 @@ export interface GroupMinterInterface extends utils.Interface {
     "setRecipient(address)": FunctionFragment;
     "totalGroup()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateGroup(uint256,address[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "updateGroup(uint256,uint16[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "add"
+      | "character"
       | "createGroup"
+      | "getGroup"
       | "groups"
       | "isWhitelisted"
       | "mint"
       | "mintable"
-      | "mintableApes"
+      | "mintableClasses"
       | "minted"
       | "owner"
       | "recipient"
@@ -74,16 +78,21 @@ export interface GroupMinterInterface extends utils.Interface {
     functionFragment: "add",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>[]]
   ): string;
+  encodeFunctionData(functionFragment: "character", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "createGroup",
     values: [
-      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getGroup",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "groups",
@@ -99,10 +108,10 @@ export interface GroupMinterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mintable",
-    values: [PromiseOrValue<string>]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintableApes",
+    functionFragment: "mintableClasses",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -135,7 +144,7 @@ export interface GroupMinterInterface extends utils.Interface {
     functionFragment: "updateGroup",
     values: [
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -145,10 +154,12 @@ export interface GroupMinterInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "add", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "character", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createGroup",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getGroup", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "groups", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isWhitelisted",
@@ -157,7 +168,7 @@ export interface GroupMinterInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintable", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "mintableApes",
+    functionFragment: "mintableClasses",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "minted", data: BytesLike): Result;
@@ -234,8 +245,10 @@ export interface GroupMinter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    character(overrides?: CallOverrides): Promise<[string]>;
+
     createGroup(
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
@@ -243,6 +256,20 @@ export interface GroupMinter extends BaseContract {
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    getGroup(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [number[], BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+        classIds: number[];
+        wlPrice: BigNumber;
+        price: BigNumber;
+        wlStartTime: BigNumber;
+        startTime: BigNumber;
+        maxPerWallet: BigNumber;
+      }
+    >;
 
     groups(
       arg0: PromiseOrValue<BigNumberish>,
@@ -270,16 +297,16 @@ export interface GroupMinter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     mintable(
-      ape: PromiseOrValue<string>,
+      classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    mintableApes(
+    mintableClasses(
       groupId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string[], BigNumber, BigNumber] & {
-        apes: string[];
+      [number[], BigNumber, BigNumber] & {
+        classIds: number[];
         mintableLength: BigNumber;
         maxMintable: BigNumber;
       }
@@ -319,7 +346,7 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
@@ -335,8 +362,10 @@ export interface GroupMinter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  character(overrides?: CallOverrides): Promise<string>;
+
   createGroup(
-    apes: PromiseOrValue<string>[],
+    classIds: PromiseOrValue<BigNumberish>[],
     wlPrice: PromiseOrValue<BigNumberish>,
     price: PromiseOrValue<BigNumberish>,
     wlStartTime: PromiseOrValue<BigNumberish>,
@@ -344,6 +373,20 @@ export interface GroupMinter extends BaseContract {
     maxPerWallet: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  getGroup(
+    groupId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<
+    [number[], BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+      classIds: number[];
+      wlPrice: BigNumber;
+      price: BigNumber;
+      wlStartTime: BigNumber;
+      startTime: BigNumber;
+      maxPerWallet: BigNumber;
+    }
+  >;
 
   groups(
     arg0: PromiseOrValue<BigNumberish>,
@@ -371,16 +414,16 @@ export interface GroupMinter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   mintable(
-    ape: PromiseOrValue<string>,
+    classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  mintableApes(
+  mintableClasses(
     groupId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string[], BigNumber, BigNumber] & {
-      apes: string[];
+    [number[], BigNumber, BigNumber] & {
+      classIds: number[];
       mintableLength: BigNumber;
       maxMintable: BigNumber;
     }
@@ -420,7 +463,7 @@ export interface GroupMinter extends BaseContract {
 
   updateGroup(
     groupId: PromiseOrValue<BigNumberish>,
-    apes: PromiseOrValue<string>[],
+    classIds: PromiseOrValue<BigNumberish>[],
     wlPrice: PromiseOrValue<BigNumberish>,
     price: PromiseOrValue<BigNumberish>,
     wlStartTime: PromiseOrValue<BigNumberish>,
@@ -436,8 +479,10 @@ export interface GroupMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    character(overrides?: CallOverrides): Promise<string>;
+
     createGroup(
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
@@ -445,6 +490,20 @@ export interface GroupMinter extends BaseContract {
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getGroup(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [number[], BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
+        classIds: number[];
+        wlPrice: BigNumber;
+        price: BigNumber;
+        wlStartTime: BigNumber;
+        startTime: BigNumber;
+        maxPerWallet: BigNumber;
+      }
+    >;
 
     groups(
       arg0: PromiseOrValue<BigNumberish>,
@@ -472,16 +531,16 @@ export interface GroupMinter extends BaseContract {
     ): Promise<void>;
 
     mintable(
-      ape: PromiseOrValue<string>,
+      classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mintableApes(
+    mintableClasses(
       groupId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string[], BigNumber, BigNumber] & {
-        apes: string[];
+      [number[], BigNumber, BigNumber] & {
+        classIds: number[];
         mintableLength: BigNumber;
         maxMintable: BigNumber;
       }
@@ -519,7 +578,7 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
@@ -547,14 +606,21 @@ export interface GroupMinter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    character(overrides?: CallOverrides): Promise<BigNumber>;
+
     createGroup(
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getGroup(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     groups(
@@ -575,11 +641,11 @@ export interface GroupMinter extends BaseContract {
     ): Promise<BigNumber>;
 
     mintable(
-      ape: PromiseOrValue<string>,
+      classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mintableApes(
+    mintableClasses(
       groupId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -618,7 +684,7 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
@@ -635,14 +701,21 @@ export interface GroupMinter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    character(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     createGroup(
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
       maxPerWallet: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getGroup(
+      groupId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     groups(
@@ -663,11 +736,11 @@ export interface GroupMinter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     mintable(
-      ape: PromiseOrValue<string>,
+      classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    mintableApes(
+    mintableClasses(
       groupId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -706,7 +779,7 @@ export interface GroupMinter extends BaseContract {
 
     updateGroup(
       groupId: PromiseOrValue<BigNumberish>,
-      apes: PromiseOrValue<string>[],
+      classIds: PromiseOrValue<BigNumberish>[],
       wlPrice: PromiseOrValue<BigNumberish>,
       price: PromiseOrValue<BigNumberish>,
       wlStartTime: PromiseOrValue<BigNumberish>,
