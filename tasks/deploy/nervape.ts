@@ -22,7 +22,7 @@ task("deploy:character").setAction(async function (taskArguments: TaskArguments,
   const signers: SignerWithAddress[] = await ethers.getSigners();
   const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const nervape: Nervape = <Nervape>(
-    await nervapeFactory.connect(signers[0]).deploy("Nervape ", "NAPE", "https://nervape.com/nape/")
+    await nervapeFactory.connect(signers[0]).deploy("Nervape ", "NAPE", "https://metadata.nervape.com/nape/")
   );
   await nervape.deployed();
   console.log("Nervape character deployed to: ", nervape.address);
@@ -30,6 +30,8 @@ task("deploy:character").setAction(async function (taskArguments: TaskArguments,
     await nervape.addNewClass(256);
     console.log("add bridge class: ", id);
   }
+  await nervape.addNewClass(10); // Mirana Special
+  console.log("add bridge class: ", 8);
 });
 
 task("deploy:addClass")
@@ -43,7 +45,7 @@ task("deploy:addClass")
     const tx = await nervape.addNewClass(taskArguments.maxsupply);
     const receipt = await tx.wait();
     if (receipt.status) {
-      const classId = await nervape.currentClassId();
+      const classId = await nervape.lastClassId();
       console.log("added class ", classId);
     } else {
       console.log("failed to add new class");
@@ -54,7 +56,7 @@ task("deploy:scene").setAction(async function (taskArguments: TaskArguments, { e
   const signers: SignerWithAddress[] = await ethers.getSigners();
   const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const nervape: Nervape = <Nervape>(
-    await nervapeFactory.connect(signers[0]).deploy("Nervape Scene", "NSCENE", "https://nervape.com/scene/")
+    await nervapeFactory.connect(signers[0]).deploy("Nervape Scene", "NSCENE", "https://metadata.nervape.com/scene/")
   );
   await nervape.deployed();
   console.log("Nervape scene deployed to: ", nervape.address);
@@ -68,9 +70,14 @@ task("deploy:item").setAction(async function (taskArguments: TaskArguments, { et
   const signers: SignerWithAddress[] = await ethers.getSigners();
   const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const nervape: Nervape = <Nervape>(
-    await nervapeFactory.connect(signers[0]).deploy("Nervape Item", "NITEM", "https://nervape.com/item/")
+    await nervapeFactory.connect(signers[0]).deploy("Nervape Item", "NITEM", "https://metadata.nervape.com/item/")
   );
   await nervape.deployed();
+
+  await nervape.addNewClass(256); // B-Book
+  console.log("add item B-Book");
+  await nervape.addNewClass(256); // B-Boat
+  console.log("add item B-Boat");
   console.log("Nervape item deployed to: ", nervape.address);
 });
 
@@ -95,7 +102,7 @@ task("Nervape:setMinter")
     const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
     const nervape: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(taskArguments.nervape);
     await nervape.setMinter(taskArguments.minter);
-    console.log("minter added");
+    console.log("minter %s added", taskArguments.minter);
   });
 
 task("deploy:CampaignMinter")
@@ -125,7 +132,7 @@ task("deploy:StoryVoting").setAction(async function (taskArguments: TaskArgument
 });
 
 task("GroupMinter:createGroup")
-  .addParam("group", "group index")
+  .addParam("groupindex", "group index")
   .addParam("wlprice", "whitelist mint price")
   .addParam("price", "normal mint price each")
   .addParam("wlstarttime", "whitelisted mint start time")
@@ -134,7 +141,7 @@ task("GroupMinter:createGroup")
   .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
     const wlprice = ethers.utils.parseEther(taskArguments.wlprice);
     const price = ethers.utils.parseEther(taskArguments.price);
-    const groupIndex = parseInt(taskArguments.group);
+    const groupIndex = parseInt(taskArguments.groupindex);
     const group = getDeployment(network.name, "groups")[groupIndex];
     const classIds = group.characterClasses;
 
@@ -161,6 +168,39 @@ task("GroupMinter:createGroup")
     );
     const receipt = await tx.wait();
     console.log("Minter Group %d created at %s", groupIndex + 1, receipt.transactionHash);
+  });
+
+task("Whitelist:add")
+  .addParam("group", "group id")
+  .addParam("address", "address to add")
+  .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+    const signers: SignerWithAddress[] = await ethers.getSigners();
+    const owner = signers[0];
+    const minterFactory: GroupMinter__factory = <GroupMinter__factory>await ethers.getContractFactory("GroupMinter");
+    const minter: GroupMinter = <GroupMinter>(
+      await minterFactory.connect(owner).attach(getDeployment(network.name, "GroupMinter"))
+    );
+    const tx = await minter.add(taskArguments.group, [taskArguments.address]);
+    const receipt = await tx.wait();
+    console.log("%s added to whitelist of group %d", taskArguments.address, taskArguments.group);
+  });
+
+task("GroupMinter:mint")
+  .addParam("group", "group id")
+  .addParam("count", "amount to mint")
+  .setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+    const signers: SignerWithAddress[] = await ethers.getSigners();
+    const account = signers[0];
+    const minterFactory: GroupMinter__factory = <GroupMinter__factory>await ethers.getContractFactory("GroupMinter");
+    const minter: GroupMinter = <GroupMinter>(
+      await minterFactory.connect(account).attach(getDeployment(network.name, "GroupMinter"))
+    );
+
+    const count = parseInt(taskArguments.count);
+    const tx = await minter.mint(taskArguments.group, count, { value: ethers.utils.parseEther("10").mul(count) });
+    const receipt = await tx.wait();
+    console.log(receipt);
+    console.log("%d minted in group %d at %s", count, taskArguments.group, receipt.transactionHash);
   });
 
 task("CampaignMinter:createCampaign")

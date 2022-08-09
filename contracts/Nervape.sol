@@ -9,7 +9,9 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
     string public baseURI;
     address public minter;
     address public bridge;
-    uint16 public currentClassId;
+
+    uint16 public lastClassId;
+
     mapping(uint16 => uint16) _maxSupplies;
     mapping(uint16 => uint16) _totalSupplies;
 
@@ -44,9 +46,8 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
     }
 
     function addNewClass(uint16 maxSupply) external onlyOwner {
-        currentClassId += 1;
         require(maxSupply <= 10000, "Max supply exceeds 10000");
-        _maxSupplies[currentClassId] = maxSupply;
+        _maxSupplies[++lastClassId] = maxSupply;
     }
 
     function _baseURI() internal view override returns (string memory) {
@@ -61,8 +62,10 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         return _maxSupplies[classId];
     }
 
-    function classOf(uint256 tokenId) public pure returns (uint16) {
-        return uint16(tokenId / 10000);
+    function classOf(uint256 tokenId) public view returns (uint16) {
+        uint16 classId = uint16(tokenId / 10000);
+        require(classId > 0 && classId <= lastClassId, "Invalid tokenId");
+        return classId;
     }
 
     function tokensOfOwnerByClass(address owner, uint16 classId) public view returns (uint256[] memory) {
@@ -85,15 +88,16 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
 
     function bridgeMint(address to, uint256 tokenId) external onlyBridge {
         uint16 classId = classOf(tokenId);
+        require(classId > 0 && classId <= lastClassId, "Invalid tokenId");
         require(totalSupplyOfClass(classId) < maxSupplyOfClass(classId), "Exceeded max supply");
         _totalSupplies[classId] += 1;
         _safeMint(to, tokenId);
     }
 
     function mint(uint16 classId, address to) external onlyMinter {
+        require(classId > 0 && classId <= lastClassId, "Invalid classId");
         require(totalSupplyOfClass(classId) < maxSupplyOfClass(classId), "Exceeded max supply");
-        uint16 lastId = totalSupplyOfClass(classId);
-        uint256 tokenId = classId * 10000 + lastId;
+        uint256 tokenId = uint256(classId) * 10000 + totalSupplyOfClass(classId);
         _totalSupplies[classId] += 1;
         _safeMint(to, tokenId);
     }

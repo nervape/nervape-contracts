@@ -136,7 +136,7 @@ const _abi = [
         type: "uint16",
       },
     ],
-    stateMutability: "pure",
+    stateMutability: "view",
     type: "function",
   },
   {

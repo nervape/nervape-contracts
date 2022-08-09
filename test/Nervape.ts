@@ -22,20 +22,29 @@ describe("Nervape", function () {
     this.nervape = <Nervape>await apeFactory.deploy("Nervape Character", "NAPE", "uri");
     await this.nervape.deployed();
     await this.nervape.setMinter(this.signers.minter.address);
-    await this.nervape.addNewClass(3);
   });
 
   describe("addNewClass", function () {
     it("should add new class by owner with max supply", async function () {
+      await this.nervape.addNewClass(3);
       expect(await this.nervape.maxSupplyOfClass(1)).to.eq(3);
     });
     it("max supply should be less than 10000", async function () {
+      await this.nervape.addNewClass(3);
       await expect(this.nervape.addNewClass(10001)).to.be.revertedWith("Max supply exceeds 10000");
+    });
+    it("should increment lastClassId", async function () {
+      expect(await this.nervape.lastClassId()).to.eq(0);
+      await this.nervape.addNewClass(3);
+      expect(await this.nervape.lastClassId()).to.eq(1);
+      await this.nervape.addNewClass(5);
+      expect(await this.nervape.lastClassId()).to.eq(2);
     });
   });
 
   describe("totalSupplyOfClass", function () {
     it("returns total supply of class", async function () {
+      await this.nervape.addNewClass(3);
       expect(await this.nervape.totalSupplyOfClass(1)).to.eq(0);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
       expect(await this.nervape.totalSupplyOfClass(1)).to.eq(1);
@@ -44,6 +53,7 @@ describe("Nervape", function () {
 
   describe("maxSupplyOfClass", function () {
     it("returns max supply of class", async function () {
+      await this.nervape.addNewClass(3);
       expect(await this.nervape.maxSupplyOfClass(1)).to.eq(3);
       this.nervape.addNewClass(256);
       expect(await this.nervape.maxSupplyOfClass(2)).to.eq(256);
@@ -52,12 +62,17 @@ describe("Nervape", function () {
 
   describe("mint", function () {
     it("should mint to destination address ", async function () {
-      await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
+      for (let i = 0; i < 11; i++) {
+        await this.nervape.addNewClass(3);
+      }
+      const classId = await this.nervape.lastClassId();
+      await this.nervape.connect(this.signers.minter).mint(classId, this.signers.user.address);
       expect(await this.nervape.totalSupply()).to.eq(1);
-      expect(await this.nervape.totalSupplyOfClass(1)).to.eq(1);
+      expect(await this.nervape.totalSupplyOfClass(classId)).to.eq(1);
       expect(await this.nervape.balanceOf(this.signers.user.address)).to.eq(1);
     });
     it("should be reverted if exceeds max supply", async function () {
+      await this.nervape.addNewClass(3);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
@@ -66,6 +81,7 @@ describe("Nervape", function () {
       );
     });
     it("should only be minted by minter", async function () {
+      await this.nervape.addNewClass(3);
       await expect(this.nervape.connect(this.signers.admin).mint(1, this.signers.user.address)).to.be.revertedWith(
         "Not minter",
       );
@@ -74,6 +90,7 @@ describe("Nervape", function () {
 
   describe("bridgeMint", function () {
     it("should only be minted by bridge", async function () {
+      await this.nervape.addNewClass(3);
       await expect(this.nervape.connect(this.bridge).bridgeMint(this.signers.user.address, 10000)).to.be.revertedWith(
         "Not bridge",
       );
@@ -84,6 +101,7 @@ describe("Nervape", function () {
 
   describe("tokensOfOwnerByClass", function () {
     it("should returns tokens of owner by class", async function () {
+      await this.nervape.addNewClass(3); // class id = 1
       await this.nervape.addNewClass(10); // class id = 2
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
       await this.nervape.connect(this.signers.minter).mint(2, this.signers.user.address);

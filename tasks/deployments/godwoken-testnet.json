@@ -1,16 +1,18 @@
 {
-  "Character": "0x6317aC29EaB2F9cB71Dd2DAFe07B0AAc7e17c09f",
-  "Scene": "0x56672EDB0D82b73646387c951Fa1440675543839",
-  "Item": "",
-  "GroupMinter": "0x519e11Ad77D0bd34107ac00aea7fe48d6C459533",
+  "Character": "0x43fF378D6EB0B940288adf5575Ddfa9E0e5ffE76",
+  "Scene": "0xD93A63cb07cDa5583778CAA22a9be1C33A8dFc2f",
+  "Item": "0x0Bf190b1c900918684fAe6cfF5eF602A026Fad6B",
+  "GroupMinter": "0x751036AAd656bac74923f02e34595cD715215781",
   "CampaignMinter": "",
   "StoryVoting": "",
+  "recipient": "0x0e6375C8920FB05e62e8A8843369fBA4Beb28c4A",
   "groups": [
     {
-      "characterClasses": [8, 9, 10, 11],
-      "price": "10 CKB",
-      "wlStartTime": 1659948693,
-      "startTime": 1660121493
+      "characterClasses": [9, 10, 11, 12],
+      "wlPrice": "10 CKB",
+      "price": "15 CKB",
+      "wlStartTime": 1660024104,
+      "startTime": 1660196904
     }
   ],
   "campaigns": [

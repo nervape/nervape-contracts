@@ -38,9 +38,9 @@ export interface NervapeInterface extends utils.Interface {
     "bridge()": FunctionFragment;
     "bridgeMint(address,uint256)": FunctionFragment;
     "classOf(uint256)": FunctionFragment;
-    "currentClassId()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "lastClassId()": FunctionFragment;
     "maxSupplyOfClass(uint16)": FunctionFragment;
     "mint(uint16,address)": FunctionFragment;
     "minter()": FunctionFragment;
@@ -75,9 +75,9 @@ export interface NervapeInterface extends utils.Interface {
       | "bridge"
       | "bridgeMint"
       | "classOf"
-      | "currentClassId"
       | "getApproved"
       | "isApprovedForAll"
+      | "lastClassId"
       | "maxSupplyOfClass"
       | "mint"
       | "minter"
@@ -126,16 +126,16 @@ export interface NervapeInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "currentClassId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getApproved",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastClassId",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "maxSupplyOfClass",
@@ -242,15 +242,15 @@ export interface NervapeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "bridgeMint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "classOf", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "currentClassId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastClassId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -435,8 +435,6 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number]>;
 
-    currentClassId(overrides?: CallOverrides): Promise<[number]>;
-
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -447,6 +445,8 @@ export interface Nervape extends BaseContract {
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    lastClassId(overrides?: CallOverrides): Promise<[number]>;
 
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
@@ -590,8 +590,6 @@ export interface Nervape extends BaseContract {
     overrides?: CallOverrides
   ): Promise<number>;
 
-  currentClassId(overrides?: CallOverrides): Promise<number>;
-
   getApproved(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -602,6 +600,8 @@ export interface Nervape extends BaseContract {
     operator: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  lastClassId(overrides?: CallOverrides): Promise<number>;
 
   maxSupplyOfClass(
     classId: PromiseOrValue<BigNumberish>,
@@ -745,8 +745,6 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<number>;
 
-    currentClassId(overrides?: CallOverrides): Promise<number>;
-
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -757,6 +755,8 @@ export interface Nervape extends BaseContract {
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    lastClassId(overrides?: CallOverrides): Promise<number>;
 
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
@@ -943,8 +943,6 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    currentClassId(overrides?: CallOverrides): Promise<BigNumber>;
-
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -955,6 +953,8 @@ export interface Nervape extends BaseContract {
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    lastClassId(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
@@ -1099,8 +1099,6 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    currentClassId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1111,6 +1109,8 @@ export interface Nervape extends BaseContract {
       operator: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    lastClassId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,

@@ -10,5 +10,5 @@ interface INervape is IERC721Enumerable {
 
     function maxSupplyOfClass(uint16 classId) external view returns (uint16);
 
-    function classOf(uint256 tokenId) external pure returns (uint16);
+    function classOf(uint256 tokenId) external view returns (uint16);
 }
