@@ -24,10 +24,16 @@ contract GroupMinter is Ownable, Whitelist {
 
     // groupId => user => count
     mapping(uint256 => mapping(address => uint256)) public minted;
+    mapping(uint256 => mapping(address => bool)) public whitelistMinted;
 
     constructor(address character_, address payable recipient_) {
         character = character_;
         recipient = recipient_;
+    }
+
+    modifier checkGroup(uint256 groupId) {
+        require(groupId > 0 && groupId <= totalGroup, "Invalid group id");
+        _;
     }
 
     function setRecipient(address payable recipient_) external onlyOwner {
@@ -65,8 +71,7 @@ contract GroupMinter is Ownable, Whitelist {
         uint256 wlStartTime,
         uint256 startTime,
         uint256 maxPerWallet
-    ) external onlyOwner {
-        require(groupId <= totalGroup, "Invalid group id");
+    ) external onlyOwner checkGroup(groupId) {
         require(classIds.length > 0, "No class");
         require(block.timestamp < groups[groupId].wlStartTime, "Cannot update after started");
         require(wlStartTime > block.timestamp && startTime > wlStartTime, "Invalid start time");
@@ -83,6 +88,7 @@ contract GroupMinter is Ownable, Whitelist {
     function getGroup(uint256 groupId)
         public
         view
+        checkGroup(groupId)
         returns (
             uint16[] memory classIds,
             uint256 wlPrice,
@@ -100,11 +106,11 @@ contract GroupMinter is Ownable, Whitelist {
         maxPerWallet = groups[groupId].maxPerWallet;
     }
 
-    function mintable(uint16 classId) public view returns (uint256) {
-        uint16 unminted = INervape(character).maxSupplyOfClass(classId) -
-            INervape(character).totalSupplyOfClass(classId);
-        return uint256(unminted);
-    }
+    // function mintable(uint16 classId) public view returns (uint256) {
+    //     uint16 unminted = INervape(character).maxSupplyOfClass(classId) -
+    //         INervape(character).totalSupplyOfClass(classId);
+    //     return uint256(unminted);
+    // }
 
     function mintableClasses(uint256 groupId)
         public
@@ -118,7 +124,7 @@ contract GroupMinter is Ownable, Whitelist {
         classIds = new uint16[](groups[groupId].classIds.length);
         uint256 i = 0;
         while (i < groups[groupId].classIds.length) {
-            uint256 mintableCount = mintable(groups[groupId].classIds[i]);
+            uint256 mintableCount = INervape(character).mintable(groups[groupId].classIds[i]);
             if (mintableCount > 0) {
                 maxMintable += mintableCount;
                 classIds[mintableLength] = groups[groupId].classIds[i];
@@ -128,27 +134,38 @@ contract GroupMinter is Ownable, Whitelist {
         }
     }
 
-    function mint(uint256 groupId, uint256 count) external payable {
+    function whitelistMint(uint256 groupId) external payable checkGroup(groupId) {
         require(msg.sender == tx.origin, "Only EOA");
-        require(groupId > 0 && groupId <= totalGroup, "Invalid group id");
+        require(isWhitelisted[groupId][msg.sender], "Not whitelisted");
+        require(!whitelistMinted[groupId][msg.sender], "Whitelist minted");
+
+        Group storage group = groups[groupId];
+        require(block.timestamp >= group.wlStartTime, "Not start");
+        require(msg.value == group.wlPrice, "Wrong payment value");
+        recipient.transfer(group.wlPrice);
+
+        whitelistMinted[groupId][msg.sender] = true;
+
+        uint256 seed = uint256(keccak256(abi.encodePacked(groupId, tx.origin)));
+        uint256 rand = random(seed);
+
+        (uint16[] memory classIds, uint256 mintableLength, uint256 maxMintable) = mintableClasses(groupId);
+        require(maxMintable >= 1, "No character class left");
+        uint256 index = rand % mintableLength;
+        INervape(character).mint(classIds[index], msg.sender);
+    }
+
+    function mint(uint256 groupId, uint256 count) external payable checkGroup(groupId) {
+        require(msg.sender == tx.origin, "Only EOA");
         require(count > 0, "Wrong mint amount");
         Group storage group = groups[groupId];
         require(minted[groupId][msg.sender] + count <= group.maxPerWallet, "Exceeded max mint amount");
 
-        uint256 paymentValue;
-        uint256 startTime;
-        if (isWhitelisted[groupId][msg.sender]) {
-            paymentValue = count * group.wlPrice;
-            startTime = group.wlStartTime;
-        } else {
-            paymentValue = count * group.price;
-            startTime = group.startTime;
-        }
-        require(block.timestamp >= startTime, "Not start");
-        require(msg.value == paymentValue, "Wrong payment value");
+        require(block.timestamp >= group.startTime, "Not start");
+        require(msg.value == count * group.price, "Wrong payment value");
 
         minted[groupId][msg.sender] += count;
-        recipient.transfer(paymentValue);
+        recipient.transfer(count * group.price);
 
         uint256 seed = uint256(keccak256(abi.encodePacked(groupId, count, tx.origin)));
         uint256 rand = random(seed);

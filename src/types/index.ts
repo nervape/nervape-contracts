@@ -38,8 +38,6 @@ export type { MerkleWhitelist } from "./contracts/MerkleWhitelist";
 export { MerkleWhitelist__factory } from "./factories/contracts/MerkleWhitelist__factory";
 export type { Nervape } from "./contracts/Nervape";
 export { Nervape__factory } from "./factories/contracts/Nervape__factory";
-export type { Sample } from "./contracts/Sample";
-export { Sample__factory } from "./factories/contracts/Sample__factory";
 export type { StoryVoting } from "./contracts/StoryVoting";
 export { StoryVoting__factory } from "./factories/contracts/StoryVoting__factory";
 export type { Whitelist } from "./contracts/Whitelist";

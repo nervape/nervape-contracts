@@ -69,10 +69,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Nervape__factory>;
     getContractFactory(
-      name: "Sample",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Sample__factory>;
-    getContractFactory(
       name: "StoryVoting",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StoryVoting__factory>;
@@ -151,11 +147,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Nervape>;
-    getContractAt(
-      name: "Sample",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Sample>;
     getContractAt(
       name: "StoryVoting",
       address: string,

@@ -6,6 +6,5 @@ export type { GroupMinter } from "./GroupMinter";
 export type { INervape } from "./INervape";
 export type { MerkleWhitelist } from "./MerkleWhitelist";
 export type { Nervape } from "./Nervape";
-export type { Sample } from "./Sample";
 export type { StoryVoting } from "./StoryVoting";
 export type { Whitelist } from "./Whitelist";

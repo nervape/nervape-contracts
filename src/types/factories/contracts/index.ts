@@ -6,6 +6,5 @@ export { GroupMinter__factory } from "./GroupMinter__factory";
 export { INervape__factory } from "./INervape__factory";
 export { MerkleWhitelist__factory } from "./MerkleWhitelist__factory";
 export { Nervape__factory } from "./Nervape__factory";
-export { Sample__factory } from "./Sample__factory";
 export { StoryVoting__factory } from "./StoryVoting__factory";
 export { Whitelist__factory } from "./Whitelist__factory";

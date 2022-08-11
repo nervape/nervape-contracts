@@ -16,4 +16,5 @@ export interface Signers {
   minter: SignerWithAddress;
   owner: SignerWithAddress;
   user: SignerWithAddress;
+  user2: SignerWithAddress;
 }

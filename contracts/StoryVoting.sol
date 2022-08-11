@@ -34,7 +34,6 @@ contract StoryVoting is Ownable {
 
     uint256 public totalProposal = 0;
     address public character;
-    address public scene;
 
     mapping(uint256 => Proposal) public proposals;
 
@@ -50,9 +49,8 @@ contract StoryVoting is Ownable {
     // proposal id => support choice => address => votes
     // mapping(uint256 => mapping(uint8 => mapping(address => uint256)))
 
-    constructor(address character_, address scene_) {
+    constructor(address character_) {
         character = character_;
-        scene = scene_;
     }
 
     function createProposal(
@@ -75,6 +73,28 @@ contract StoryVoting is Ownable {
         proposal.choices = choices;
         for (uint256 i = 0; i < classIds.length; i++) {
             proposal.newClassIds[classIds[i]] = newClassIds[i];
+        }
+    }
+
+    function getProposal(uint256 proposalId)
+        public
+        view
+        returns (
+            uint16[] memory classIds,
+            uint16[] memory newClassIds,
+            uint256 startTime,
+            uint256 endTime,
+            uint8 choices
+        )
+    {
+        Proposal storage proposal = proposals[proposalId];
+        classIds = proposal.classIds;
+        startTime = proposal.startTime;
+        endTime = proposal.endTime;
+        choices = proposal.choices;
+        newClassIds = new uint16[](classIds.length);
+        for (uint256 i = 0; i < classIds.length; i++) {
+            newClassIds[i] = proposal.newClassIds[classIds[i]];
         }
     }
 
@@ -165,7 +185,7 @@ contract StoryVoting is Ownable {
         if (proposal.startTime > block.timestamp) {
             return ProposalState.Pending;
         }
-        if (proposal.endTime < block.timestamp) {
+        if (proposal.endTime > block.timestamp) {
             return ProposalState.Active;
         }
 
@@ -173,15 +193,15 @@ contract StoryVoting is Ownable {
     }
 
     function redeem(uint256 proposalId) external {
-        redeem(proposalId, 0, userVotes[proposalId][msg.sender].length);
+        _redeem(proposalId, 0, userVotes[proposalId][msg.sender].length);
     }
 
     // [start, end)
-    function redeem(
+    function _redeem(
         uint256 proposalId,
         uint256 start,
         uint256 end
-    ) public {
+    ) internal {
         require(proposalId > 0, "Invalid proposal Id");
         require(start < end, "Invalid range");
 

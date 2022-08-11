@@ -38,6 +38,7 @@ export interface INervapeInterface extends utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "maxSupplyOfClass(uint16)": FunctionFragment;
     "mint(uint16,address)": FunctionFragment;
+    "mintable(uint16)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
@@ -59,6 +60,7 @@ export interface INervapeInterface extends utils.Interface {
       | "isApprovedForAll"
       | "maxSupplyOfClass"
       | "mint"
+      | "mintable"
       | "ownerOf"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
@@ -98,6 +100,10 @@ export interface INervapeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "mint",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mintable",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -169,6 +175,7 @@ export interface INervapeInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mintable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom(address,address,uint256)",
@@ -319,6 +326,11 @@ export interface INervape extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[number]>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -414,6 +426,11 @@ export interface INervape extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  mintable(
+    classId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<number>;
+
   ownerOf(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -508,6 +525,11 @@ export interface INervape extends BaseContract {
       to: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<number>;
 
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -640,6 +662,11 @@ export interface INervape extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -734,6 +761,11 @@ export interface INervape extends BaseContract {
       classId: PromiseOrValue<BigNumberish>,
       to: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     ownerOf(

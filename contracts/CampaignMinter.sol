@@ -100,7 +100,7 @@ contract CampaignMinter is Ownable {
 
         for (uint256 i = 0; i < tokenIds.length; i++) {
             uint16 classId = campaign.characterClassIds[i];
-            require(participated[classId][tokenIds[i]], "Already participated");
+            require(!participated[classId][tokenIds[i]], "Already participated");
             require(INervape(character).ownerOf(tokenIds[i]) == msg.sender, "Not owner");
             require(INervape(character).classOf(tokenIds[i]) == classId, "Invalid character");
             participated[classId][tokenIds[i]] = true;
@@ -116,11 +116,9 @@ contract CampaignMinter is Ownable {
 
     function mint(uint256 campaignId, uint256 count) external payable {
         require(msg.sender == tx.origin, "Only EOA");
+        require(campaignId > 0 && campaignId <= totalCampaign, "Invalid campaign id");
         Campaign memory campaign = campaigns[campaignId];
         require(block.timestamp >= campaign.startTime, "Minting has not started");
-
-        require(campaignId > 0 && campaignId <= totalCampaign, "Invalid campaign id");
-        require(count > 0 && count <= 2, "Wrong mint amount");
         require(minted[campaignId][msg.sender] + count <= campaign.maxPerWallet, "Exceeded max mint amount");
         require(msg.value == count * campaign.price, "Wrong payment value");
 
@@ -128,7 +126,7 @@ contract CampaignMinter is Ownable {
         recipient.transfer(count * campaign.price);
 
         for (uint256 i = 0; i < count; i++) {
-            INervape(character).mint(campaign.sceneClassId, msg.sender);
+            INervape(scene).mint(campaign.sceneClassId, msg.sender);
         }
     }
 }

@@ -38,6 +38,7 @@ const chainIds = {
   rinkeby: 4,
   "godwoken-testnet": 71401,
   godwoken: 71402,
+  local: 31337,
 };
 
 function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
@@ -54,6 +55,9 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       break;
     case "godwoken":
       jsonRpcUrl = "https://v1.mainnet.godwoken.io/rpc";
+      break;
+    case "local":
+      jsonRpcUrl = "http://127.0.0.1:8545";
       break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
@@ -86,6 +90,7 @@ const config: HardhatUserConfig = {
       polygon: process.env.POLYGONSCAN_API_KEY || "",
       polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
       rinkeby: process.env.ETHERSCAN_API_KEY || "",
+      local: "",
     },
   },
   gasReporter: {
@@ -101,6 +106,7 @@ const config: HardhatUserConfig = {
       },
       chainId: chainIds.hardhat,
     },
+    local: getChainConfig("local"),
     arbitrum: getChainConfig("arbitrum-mainnet"),
     avalanche: getChainConfig("avalanche"),
     bsc: getChainConfig("bsc"),

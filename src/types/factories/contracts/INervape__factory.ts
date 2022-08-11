@@ -222,6 +222,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint16",
+        name: "classId",
+        type: "uint16",
+      },
+    ],
+    name: "mintable",
+    outputs: [
+      {
+        internalType: "uint16",
+        name: "",
+        type: "uint16",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",

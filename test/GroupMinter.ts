@@ -5,7 +5,7 @@ import { ethers, network } from "hardhat";
 import type { GroupMinter, GroupMinter__factory, Nervape, Nervape__factory } from "../src/types";
 import { Signers } from "./types";
 
-describe("Minter", function () {
+describe("GroupMinter", function () {
   before(async function () {
     this.signers = {} as Signers;
     const signers: SignerWithAddress[] = await ethers.getSigners();
@@ -24,9 +24,9 @@ describe("Minter", function () {
   };
 
   async function createGroupFixture(nervape: Nervape, minter: GroupMinter, signers: Signers) {
-    await nervape.addNewClass(5); // 1
-    await nervape.addNewClass(3); // 2
-    await nervape.addNewClass(7); // 3
+    await nervape.addNewClass(5, 0); // 1
+    await nervape.addNewClass(3, 0); // 2
+    await nervape.addNewClass(7, 0); // 3
 
     await nervape.setMinter(minter.address);
 
@@ -122,7 +122,7 @@ describe("Minter", function () {
     });
   });
 
-  describe("whitelist mint", function () {
+  describe("whitelistMint", function () {
     beforeEach(async function () {
       await this.minter.add(1, [this.signers.user.address]);
     });
@@ -130,7 +130,7 @@ describe("Minter", function () {
       const { wlPrice, wlStartTime, groupId } = await createGroupFixture(this.nervape, this.minter, this.signers);
       await withIncreaseTime(-100, async () => {
         await expect(
-          this.minter.connect(this.signers.user).mint(groupId, 5, { value: wlPrice.mul(5) }),
+          this.minter.connect(this.signers.user).whitelistMint(groupId, { value: wlPrice }),
         ).to.be.revertedWith("Not start");
       });
     });
@@ -142,27 +142,42 @@ describe("Minter", function () {
       );
       const beforeBalance = await ethers.provider.getBalance(this.signers.owner.address);
       await withIncreaseTime(10, async () => {
-        await this.minter.connect(this.signers.user).mint(groupId, 5, { value: wlPrice.mul(5) });
-        const minted = await this.minter.minted(groupId, this.signers.user.address);
-        expect(minted).to.eq(5);
+        await this.minter.connect(this.signers.user).whitelistMint(groupId, { value: wlPrice });
+        const minted = await this.minter.whitelistMinted(groupId, this.signers.user.address);
+        expect(minted).to.be.true;
       });
       const afterBalance = await ethers.provider.getBalance(this.signers.owner.address);
-      expect(afterBalance.sub(beforeBalance)).to.eq(wlPrice.mul(5));
-      expect(await this.nervape.balanceOf(this.signers.user.address)).to.eq(5);
+      expect(afterBalance.sub(beforeBalance)).to.eq(wlPrice);
+      expect(await this.nervape.balanceOf(this.signers.user.address)).to.eq(1);
     });
-    it("should be reverted if sender is not in whitelist before start", async function () {
+
+    it("should be reverted if minted", async function () {
+      const { classIds, wlPrice, wlStartTime, groupId } = await createGroupFixture(
+        this.nervape,
+        this.minter,
+        this.signers,
+      );
+      await withIncreaseTime(10, async () => {
+        await this.minter.connect(this.signers.user).whitelistMint(groupId, { value: wlPrice });
+        await expect(
+          this.minter.connect(this.signers.user).whitelistMint(groupId, { value: wlPrice }),
+        ).to.be.revertedWith("Whitelist minted");
+      });
+    });
+
+    it("should be reverted if sender is not in whitelist", async function () {
       const { wlPrice, price, groupId } = await createGroupFixture(this.nervape, this.minter, this.signers);
       await withIncreaseTime(100, async () => {
         await expect(
-          this.minter.connect(this.signers.owner).mint(groupId, 5, { value: wlPrice.mul(5) }),
-        ).to.be.revertedWith("Not start");
+          this.minter.connect(this.signers.owner).whitelistMint(groupId, { value: wlPrice }),
+        ).to.be.revertedWith("Not whitelisted");
       });
     });
     it("should be reverted if send wrong value", async function () {
       const { wlPrice, groupId } = await createGroupFixture(this.nervape, this.minter, this.signers);
       await withIncreaseTime(100, async () => {
         await expect(
-          this.minter.connect(this.signers.user).mint(groupId, 5, { value: wlPrice.mul(3) }),
+          this.minter.connect(this.signers.user).whitelistMint(groupId, { value: wlPrice.mul(2) }),
         ).to.be.revertedWith("Wrong payment value");
       });
     });

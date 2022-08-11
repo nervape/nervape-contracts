@@ -31,7 +31,7 @@ import type {
 
 export interface NervapeInterface extends utils.Interface {
   functions: {
-    "addNewClass(uint16)": FunctionFragment;
+    "addNewClass(uint16,uint16)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
@@ -40,13 +40,16 @@ export interface NervapeInterface extends utils.Interface {
     "classOf(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "isMinter(address)": FunctionFragment;
     "lastClassId()": FunctionFragment;
     "maxSupplyOfClass(uint16)": FunctionFragment;
     "mint(uint16,address)": FunctionFragment;
-    "minter()": FunctionFragment;
+    "mintable(uint16)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
+    "ownerMint(uint16,address)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "removeMinter(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
@@ -77,13 +80,16 @@ export interface NervapeInterface extends utils.Interface {
       | "classOf"
       | "getApproved"
       | "isApprovedForAll"
+      | "isMinter"
       | "lastClassId"
       | "maxSupplyOfClass"
       | "mint"
-      | "minter"
+      | "mintable"
       | "name"
       | "owner"
+      | "ownerMint"
       | "ownerOf"
+      | "removeMinter"
       | "renounceOwnership"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
@@ -105,7 +111,7 @@ export interface NervapeInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "addNewClass",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "approve",
@@ -134,6 +140,10 @@ export interface NervapeInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "isMinter",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "lastClassId",
     values?: undefined
   ): string;
@@ -145,12 +155,23 @@ export interface NervapeInterface extends utils.Interface {
     functionFragment: "mint",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: "minter", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "mintable",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "ownerMint",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "ownerOf",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeMinter",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -249,6 +270,7 @@ export interface NervapeInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "isMinter", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastClassId",
     data: BytesLike
@@ -258,10 +280,15 @@ export interface NervapeInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "minter", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mintable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "ownerMint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeMinter",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -406,6 +433,7 @@ export interface Nervape extends BaseContract {
   functions: {
     addNewClass(
       maxSupply: PromiseOrValue<BigNumberish>,
+      reserved: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -446,6 +474,11 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    isMinter(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     lastClassId(overrides?: CallOverrides): Promise<[number]>;
 
     maxSupplyOfClass(
@@ -459,16 +492,30 @@ export interface Nervape extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    minter(overrides?: CallOverrides): Promise<[string]>;
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[number]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    ownerMint(
+      classId: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    removeMinter(
+      minter_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -561,6 +608,7 @@ export interface Nervape extends BaseContract {
 
   addNewClass(
     maxSupply: PromiseOrValue<BigNumberish>,
+    reserved: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -601,6 +649,11 @@ export interface Nervape extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  isMinter(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   lastClassId(overrides?: CallOverrides): Promise<number>;
 
   maxSupplyOfClass(
@@ -614,16 +667,30 @@ export interface Nervape extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  minter(overrides?: CallOverrides): Promise<string>;
+  mintable(
+    classId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<number>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  ownerMint(
+    classId: PromiseOrValue<BigNumberish>,
+    to: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   ownerOf(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  removeMinter(
+    minter_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -716,6 +783,7 @@ export interface Nervape extends BaseContract {
   callStatic: {
     addNewClass(
       maxSupply: PromiseOrValue<BigNumberish>,
+      reserved: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -756,6 +824,11 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    isMinter(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     lastClassId(overrides?: CallOverrides): Promise<number>;
 
     maxSupplyOfClass(
@@ -769,16 +842,30 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    minter(overrides?: CallOverrides): Promise<string>;
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<number>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    ownerMint(
+      classId: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    removeMinter(
+      minter_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -914,6 +1001,7 @@ export interface Nervape extends BaseContract {
   estimateGas: {
     addNewClass(
       maxSupply: PromiseOrValue<BigNumberish>,
+      reserved: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -954,6 +1042,11 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    isMinter(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     lastClassId(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxSupplyOfClass(
@@ -967,15 +1060,29 @@ export interface Nervape extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    minter(overrides?: CallOverrides): Promise<BigNumber>;
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    ownerMint(
+      classId: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    removeMinter(
+      minter_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     renounceOwnership(
@@ -1070,6 +1177,7 @@ export interface Nervape extends BaseContract {
   populateTransaction: {
     addNewClass(
       maxSupply: PromiseOrValue<BigNumberish>,
+      reserved: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1110,6 +1218,11 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    isMinter(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     lastClassId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maxSupplyOfClass(
@@ -1123,15 +1236,29 @@ export interface Nervape extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    minter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    mintable(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    ownerMint(
+      classId: PromiseOrValue<BigNumberish>,
+      to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    removeMinter(
+      minter_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(

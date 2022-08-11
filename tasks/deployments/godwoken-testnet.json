@@ -1,34 +1,29 @@
 {
-  "Character": "0x43fF378D6EB0B940288adf5575Ddfa9E0e5ffE76",
-  "Scene": "0xD93A63cb07cDa5583778CAA22a9be1C33A8dFc2f",
-  "Item": "0x0Bf190b1c900918684fAe6cfF5eF602A026Fad6B",
-  "GroupMinter": "0x751036AAd656bac74923f02e34595cD715215781",
-  "CampaignMinter": "",
-  "StoryVoting": "",
+  "Character": "0xFdBd25D3A37a111410F0b4346FD79bC269145F3a",
+  "Scene": "0x413926846a1c5621882451f57201A0113b81F6C4",
+  "Item": "0x46db3cb7F2164c48cE9c59459B8f0da2e7748EE0",
+  "GroupMinter": "0x7Cd55a98Db1213dEbde6074f8C66162A2dB949E1",
+  "CampaignMinter": "0xC640A12e5831f63e3201D051C391f124866F202B",
+  "StoryVoting": "0x295f7603b72cc9054235296B0cE5780A35e466eC",
   "recipient": "0x0e6375C8920FB05e62e8A8843369fBA4Beb28c4A",
   "groups": [
     {
       "characterClasses": [9, 10, 11, 12],
       "wlPrice": "10 CKB",
-      "price": "15 CKB",
-      "wlStartTime": 1660024104,
-      "startTime": 1660196904
+      "price": "15 CKB"
     }
   ],
   "campaigns": [
     {
-      "characterClasses": [],
-      "sceneClass": 0,
-      "price": "10 CKB",
-      "claimStartTime": 0,
-      "claimEndTime": 0,
-      "startTime": 0
+      "characterClasses": [9, 10, 11, 12],
+      "sceneClass": 3,
+      "price": "10 CKB"
     }
   ],
   "proposals": [
     {
-      "classes": [],
-      "newClasses": []
+      "classes": [9, 10, 11, 12],
+      "newClasses": [13, 14, 15, 16]
     }
   ]
 }

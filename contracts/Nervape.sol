@@ -7,16 +7,16 @@ import "./INervape.sol";
 
 contract Nervape is INervape, ERC721Enumerable, Ownable {
     string public baseURI;
-    address public minter;
     address public bridge;
-
     uint16 public lastClassId;
 
     mapping(uint16 => uint16) _maxSupplies;
     mapping(uint16 => uint16) _totalSupplies;
+    mapping(uint16 => uint16) _reserves;
+    mapping(address => bool) public isMinter;
 
     modifier onlyMinter() {
-        require(msg.sender == minter, "Not minter");
+        require(isMinter[msg.sender], "Not minter");
         _;
     }
 
@@ -33,21 +33,31 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         baseURI = uri_;
     }
 
+    function _checkClass(uint16 classId) internal view {
+        require(classId > 0 && classId <= lastClassId, "Invalid class Id");
+    }
+
     function setBaseURI(string memory uri_) external onlyOwner {
         baseURI = uri_;
     }
 
     function setMinter(address minter_) external onlyOwner {
-        minter = minter_;
+        isMinter[minter_] = true;
+    }
+
+    function removeMinter(address minter_) external onlyOwner {
+        isMinter[minter_] = false;
     }
 
     function setBridge(address bridge_) external onlyOwner {
         bridge = bridge_;
     }
 
-    function addNewClass(uint16 maxSupply) external onlyOwner {
+    function addNewClass(uint16 maxSupply, uint16 reserved) external onlyOwner {
         require(maxSupply <= 10000, "Max supply exceeds 10000");
-        _maxSupplies[++lastClassId] = maxSupply;
+        lastClassId += 1;
+        _maxSupplies[lastClassId] = maxSupply;
+        _reserves[lastClassId] = reserved;
     }
 
     function _baseURI() internal view override returns (string memory) {
@@ -64,7 +74,7 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
 
     function classOf(uint256 tokenId) public view returns (uint16) {
         uint16 classId = uint16(tokenId / 10000);
-        require(classId > 0 && classId <= lastClassId, "Invalid tokenId");
+        _checkClass(classId);
         return classId;
     }
 
@@ -86,19 +96,34 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         return tokenIds;
     }
 
+    function mintable(uint16 classId) public view returns (uint16) {
+        _checkClass(classId);
+        require(maxSupplyOfClass(classId) >= _reserves[classId], "Max supply less than team reserved amount");
+        return maxSupplyOfClass(classId) - totalSupplyOfClass(classId) - _reserves[classId];
+    }
+
+    function ownerMint(uint16 classId, address to) external onlyOwner {
+        _checkClass(classId);
+        require(_reserves[classId] > 0, "No team reserves");
+        for (uint16 i = 0; i < _reserves[classId]; i++) {
+            uint256 tokenId = uint256(classId) * 10000 + totalSupplyOfClass(classId);
+            _totalSupplies[classId] += 1;
+            _mint(to, tokenId);
+        }
+    }
+
     function bridgeMint(address to, uint256 tokenId) external onlyBridge {
         uint16 classId = classOf(tokenId);
-        require(classId > 0 && classId <= lastClassId, "Invalid tokenId");
-        require(totalSupplyOfClass(classId) < maxSupplyOfClass(classId), "Exceeded max supply");
+        require(mintable(classId) > 0, "Exceeded max supply");
         _totalSupplies[classId] += 1;
-        _safeMint(to, tokenId);
+        _mint(to, tokenId);
     }
 
     function mint(uint16 classId, address to) external onlyMinter {
-        require(classId > 0 && classId <= lastClassId, "Invalid classId");
-        require(totalSupplyOfClass(classId) < maxSupplyOfClass(classId), "Exceeded max supply");
+        _checkClass(classId);
+        require(mintable(classId) > 0, "Exceeded max supply");
         uint256 tokenId = uint256(classId) * 10000 + totalSupplyOfClass(classId);
         _totalSupplies[classId] += 1;
-        _safeMint(to, tokenId);
+        _mint(to, tokenId);
     }
 }
