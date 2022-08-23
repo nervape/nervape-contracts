@@ -383,8 +383,8 @@ task("CampaignMinter:createCampaign")
     const campaign = getDeployment(network.name, "campaigns")[campaignIndex];
 
     console.log("classes: ", campaign.characterClasses);
-    console.log("scene: ", campaign.scene);
-    console.log("price: ", taskArguments.price);
+    console.log("scene: ", campaign.sceneClass);
+    console.log("price: ", price.toString());
     console.log("claim start time: ", taskArguments.claimstarttime);
     console.log("claim end time: ", taskArguments.claimendtime);
     console.log("start time: ", taskArguments.starttime);
@@ -401,8 +401,8 @@ task("CampaignMinter:createCampaign")
 
     const tx = await campaignMinter.createCampaign(
       campaign.characterClasses,
-      campaign.scene,
-      price,
+      campaign.sceneClass,
+      price.toString(),
       taskArguments.claimstarttime,
       taskArguments.claimendtime,
       taskArguments.starttime,
@@ -447,10 +447,44 @@ task("StoryVoting:createProposal")
     console.log("Voting proposal %d created", proposalIndex + 1);
   });
 
-task("deploy:test:send-tx").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
-  // const signers: SignerWithAddress[] = await ethers.getSigners();
-  // const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
-  // const nervape: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(getAddress(network.name, "Nervape"));
+task("deploy:testMint").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+  const nervape: Nervape = <Nervape>(
+    await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Character"))
+  );
+  // await nervape.setMinter(signers[0].address)
+
+  for (let i = 0; i < 5; i++) {
+    await nervape.mint(9, "0x7ca85830a18A7F0eBc9323AEb00F81C57Fa6695B");
+    await nervape.mint(10, "0x7ca85830a18A7F0eBc9323AEb00F81C57Fa6695B");
+    await nervape.mint(11, "0x7ca85830a18A7F0eBc9323AEb00F81C57Fa6695B");
+    await nervape.mint(12, "0x7ca85830a18A7F0eBc9323AEb00F81C57Fa6695B");
+  }
+
+  // const receipt = await tx.wait()
+  // console.log(receipt)
+
+  // const totalSupply = await nervape.totalSupply()
+  // const tx = await nervape.mint(1, { value: ethers.utils.parseEther('100') })
+  // const receipt = await tx.wait()
+  // console.log("tx =  ", tx);
+  // console.log("response =  ", receipt.events && receipt.events[0].topics);
+  // console.log("totalSupply =  ", totalSupply.toNumber());
+});
+task("call").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+  const nervape: Nervape = <Nervape>(
+    await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Scene"))
+  );
+  // await nervape.setMinter(signers[0].address)
+  const tokens = await nervape.tokensOfOwnerByClass("0x7ca85830a18A7F0eBc9323AEb00F81C57Fa6695B", 3);
+  const balance = await nervape.balanceOf("0x7ca85830a18A7F0eBc9323AEb00F81C57Fa6695B");
+  const totalSupply = await nervape.totalSupplyOfClass(3);
+
+  console.log("tokens=", tokens, balance, totalSupply);
+
   // const totalSupply = await nervape.totalSupply()
   // const tx = await nervape.mint(1, { value: ethers.utils.parseEther('100') })
   // const receipt = await tx.wait()

@@ -119,11 +119,12 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         _mint(to, tokenId);
     }
 
-    function mint(uint16 classId, address to) external onlyMinter {
+    function mint(uint16 classId, address to) external onlyMinter returns (uint256) {
         _checkClass(classId);
         require(mintable(classId) > 0, "Exceeded max supply");
         uint256 tokenId = uint256(classId) * 10000 + totalSupplyOfClass(classId);
         _totalSupplies[classId] += 1;
         _mint(to, tokenId);
+        return tokenId;
     }
 }

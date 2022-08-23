@@ -840,7 +840,7 @@ export interface Nervape extends BaseContract {
       classId: PromiseOrValue<BigNumberish>,
       to: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     mintable(
       classId: PromiseOrValue<BigNumberish>,

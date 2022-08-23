@@ -106,12 +106,6 @@ contract GroupMinter is Ownable, Whitelist {
         maxPerWallet = groups[groupId].maxPerWallet;
     }
 
-    // function mintable(uint16 classId) public view returns (uint256) {
-    //     uint16 unminted = INervape(character).maxSupplyOfClass(classId) -
-    //         INervape(character).totalSupplyOfClass(classId);
-    //     return uint256(unminted);
-    // }
-
     function mintableClasses(uint256 groupId)
         public
         view
@@ -141,6 +135,7 @@ contract GroupMinter is Ownable, Whitelist {
 
         Group storage group = groups[groupId];
         require(block.timestamp >= group.wlStartTime, "Not start");
+        require(block.timestamp < group.startTime, "Has ended");
         require(msg.value == group.wlPrice, "Wrong payment value");
         recipient.transfer(group.wlPrice);
 
@@ -174,7 +169,7 @@ contract GroupMinter is Ownable, Whitelist {
         while (i < count) {
             (uint16[] memory classIds, uint256 mintableLength, uint256 maxMintable) = mintableClasses(groupId);
             require(maxMintable >= count - i, "No character class left");
-            uint256 base = (rand >> (256 - (i + 1) * 8)) & (2**(8 * (i + 1)) - 1);
+            uint256 base = (rand >> (256 - (i + 1) * 8)) & 255;
             uint256 index = base % mintableLength;
             INervape(character).mint(classIds[index], msg.sender);
             i++;

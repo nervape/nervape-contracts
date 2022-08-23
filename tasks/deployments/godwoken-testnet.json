@@ -18,6 +18,11 @@
       "characterClasses": [9, 10, 11, 12],
       "sceneClass": 3,
       "price": "10 CKB"
+    },
+    {
+      "characterClasses": [9, 10, 11, 12],
+      "sceneClass": 3,
+      "price": "10 CKB"
     }
   ],
   "proposals": [

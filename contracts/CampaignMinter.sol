@@ -28,6 +28,8 @@ contract CampaignMinter is Ownable {
     // campaignId => user => count
     mapping(uint256 => mapping(address => uint256)) public minted;
 
+    event Claimed(address indexed sender, uint256 campaignId, uint256[] tokenIds, uint256 sceneId);
+
     constructor(
         address character_,
         address scene_,
@@ -36,6 +38,11 @@ contract CampaignMinter is Ownable {
         recipient = recipient_;
         character = character_;
         scene = scene_;
+    }
+
+    modifier checkCampaign(uint256 campaignId) {
+        require(campaignId > 0 && campaignId <= totalCampaign, "Invalid campaign ID");
+        _;
     }
 
     function createCampaign(
@@ -71,8 +78,7 @@ contract CampaignMinter is Ownable {
         uint256 claimEndTime,
         uint256 startTime,
         uint256 maxPerWallet
-    ) external onlyOwner {
-        require(campaignId <= totalCampaign, "Invalid campaign id");
+    ) external onlyOwner checkCampaign(campaignId) {
         require(claimStartTime < claimEndTime, "Invalid claim end time");
         require(block.timestamp < campaigns[campaignId].claimStartTime, "Cannot update after started");
 
@@ -91,7 +97,7 @@ contract CampaignMinter is Ownable {
         recipient = recipient_;
     }
 
-    function claim(uint256 campaignId, uint256[] calldata tokenIds) public {
+    function claim(uint256 campaignId, uint256[] calldata tokenIds) public checkCampaign(campaignId) {
         require(msg.sender == tx.origin, "Only EOA");
         Campaign memory campaign = campaigns[campaignId];
         require(tokenIds.length == campaign.characterClassIds.length, "Invalid tokens length");
@@ -105,18 +111,19 @@ contract CampaignMinter is Ownable {
             require(INervape(character).classOf(tokenIds[i]) == classId, "Invalid character");
             participated[classId][tokenIds[i]] = true;
         }
-        INervape(scene).mint(campaign.sceneClassId, msg.sender);
+        uint256 sceneTokenId = INervape(scene).mint(campaign.sceneClassId, msg.sender);
+
+        emit Claimed(msg.sender, campaignId, tokenIds, sceneTokenId);
     }
 
-    function claimMany(uint256 campaignId, uint256[][] calldata groupedTokenIds) external {
+    function claimMany(uint256 campaignId, uint256[][] calldata groupedTokenIds) external checkCampaign(campaignId) {
         for (uint256 i = 0; i < groupedTokenIds.length; i++) {
             claim(campaignId, groupedTokenIds[i]);
         }
     }
 
-    function mint(uint256 campaignId, uint256 count) external payable {
+    function mint(uint256 campaignId, uint256 count) external payable checkCampaign(campaignId) {
         require(msg.sender == tx.origin, "Only EOA");
-        require(campaignId > 0 && campaignId <= totalCampaign, "Invalid campaign id");
         Campaign memory campaign = campaigns[campaignId];
         require(block.timestamp >= campaign.startTime, "Minting has not started");
         require(minted[campaignId][msg.sender] + count <= campaign.maxPerWallet, "Exceeded max mint amount");

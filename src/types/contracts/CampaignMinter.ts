@@ -179,11 +179,26 @@ export interface CampaignMinterInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "Claimed(address,uint256,uint256[],uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Claimed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export interface ClaimedEventObject {
+  sender: string;
+  campaignId: BigNumber;
+  tokenIds: BigNumber[];
+  sceneId: BigNumber;
+}
+export type ClaimedEvent = TypedEvent<
+  [string, BigNumber, BigNumber[], BigNumber],
+  ClaimedEventObject
+>;
+
+export type ClaimedEventFilter = TypedEventFilter<ClaimedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -499,6 +514,19 @@ export interface CampaignMinter extends BaseContract {
   };
 
   filters: {
+    "Claimed(address,uint256,uint256[],uint256)"(
+      sender?: PromiseOrValue<string> | null,
+      campaignId?: null,
+      tokenIds?: null,
+      sceneId?: null
+    ): ClaimedEventFilter;
+    Claimed(
+      sender?: PromiseOrValue<string> | null,
+      campaignId?: null,
+      tokenIds?: null,
+      sceneId?: null
+    ): ClaimedEventFilter;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null

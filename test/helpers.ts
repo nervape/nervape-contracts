@@ -12,3 +12,5 @@ export const getNow = async () => {
   const block = await ethers.provider.getBlock("latest");
   return block.timestamp;
 };
+
+export const DEAD_ADDRESS = "0x000000000000000000000000000000000000dEaD";

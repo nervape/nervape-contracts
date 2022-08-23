@@ -8,6 +8,7 @@ contract StoryVoting is Ownable {
     enum ProposalState {
         Pending,
         Active,
+        End,
         Canceled,
         Finalized
     }
@@ -34,6 +35,7 @@ contract StoryVoting is Ownable {
 
     uint256 public totalProposal = 0;
     address public character;
+    address constant DEAD = address(0x000000000000000000000000000000000000dEaD);
 
     mapping(uint256 => Proposal) public proposals;
 
@@ -49,8 +51,15 @@ contract StoryVoting is Ownable {
     // proposal id => support choice => address => votes
     // mapping(uint256 => mapping(uint8 => mapping(address => uint256)))
 
+    event Voted(address indexed sender, uint256 proposalId, uint256[] tokenIds, uint8 support);
+
     constructor(address character_) {
         character = character_;
+    }
+
+    modifier checkProposal(uint256 proposalId) {
+        require(proposalId > 0 && proposalId <= totalProposal, "Invalid proposal ID");
+        _;
     }
 
     function createProposal(
@@ -84,7 +93,9 @@ contract StoryVoting is Ownable {
             uint16[] memory newClassIds,
             uint256 startTime,
             uint256 endTime,
-            uint8 choices
+            uint8 choices,
+            uint8 finalizedChoice,
+            ProposalState state
         )
     {
         Proposal storage proposal = proposals[proposalId];
@@ -92,17 +103,19 @@ contract StoryVoting is Ownable {
         startTime = proposal.startTime;
         endTime = proposal.endTime;
         choices = proposal.choices;
+        finalizedChoice = proposal.finalizedChoice;
         newClassIds = new uint16[](classIds.length);
         for (uint256 i = 0; i < classIds.length; i++) {
             newClassIds[i] = proposal.newClassIds[classIds[i]];
         }
+        state = stateOf(proposalId);
     }
 
     function vote(
         uint256 proposalId,
         uint256[] calldata tokenIds,
         uint8 support
-    ) external {
+    ) external checkProposal(proposalId) {
         require(tokenIds.length > 0, "Invalid tokens");
         Proposal storage proposal = proposals[proposalId];
 
@@ -121,6 +134,8 @@ contract StoryVoting is Ownable {
             proposal.supportedVotes[support][classId] += 1;
         }
         votes[proposalId][support] += tokenIds.length;
+
+        emit Voted(msg.sender, proposalId, tokenIds, support);
     }
 
     function getVotes(uint256 proposalId, uint8 support) public view returns (uint256) {
@@ -133,6 +148,14 @@ contract StoryVoting is Ownable {
         }
         uint256 remainingVotes = votes[proposalId][support] - groupVotes * proposal.classIds.length;
         return (groupVotes << 128) + uint128(remainingVotes);
+    }
+
+    function getAllVotes(uint256 proposalId) public view returns (uint256[] memory allVotes) {
+        Proposal storage proposal = proposals[proposalId];
+        allVotes = new uint256[](proposal.choices);
+        for (uint8 i = 0; i < proposal.choices; i++) {
+            allVotes[i] = getVotes(proposalId, i + 1);
+        }
     }
 
     function _finalize(uint256 proposalId) internal {
@@ -188,23 +211,36 @@ contract StoryVoting is Ownable {
         if (proposal.endTime > block.timestamp) {
             return ProposalState.Active;
         }
+        if (block.timestamp > proposal.endTime) {
+            return ProposalState.End;
+        }
 
         return ProposalState.Finalized;
     }
 
-    function redeem(uint256 proposalId) external {
-        _redeem(proposalId, 0, userVotes[proposalId][msg.sender].length);
+    function finalize(uint256 proposalId) external checkProposal(proposalId) {
+        _finalize(proposalId);
+    }
+
+    function redeem(
+        uint256 proposalId,
+        uint256 start,
+        uint256 end
+    ) external checkProposal(proposalId) {
+        _redeemInternal(proposalId, start, end);
+    }
+
+    function redeemAll(uint256 proposalId) external checkProposal(proposalId) {
+        _redeemInternal(proposalId, 0, userVotes[proposalId][msg.sender].length);
     }
 
     // [start, end)
-    function _redeem(
+    function _redeemInternal(
         uint256 proposalId,
         uint256 start,
         uint256 end
     ) internal {
-        require(proposalId > 0, "Invalid proposal Id");
-        require(start < end, "Invalid range");
-
+        require(start <= end, "Invalid range");
         Proposal storage proposal = proposals[proposalId];
 
         _finalize(proposalId);
@@ -219,6 +255,7 @@ contract StoryVoting is Ownable {
             if (proposal.finalized && _votes[i].support == proposal.finalizedChoice) {
                 uint16 classId = INervape(character).classOf(_votes[i].tokenId);
                 // burn ape and mint new Ape
+                INervape(character).transferFrom(address(this), DEAD, _votes[i].tokenId);
                 INervape(character).mint(proposal.newClassIds[classId], msg.sender);
                 _votes[i].redeemed = true;
             } else {

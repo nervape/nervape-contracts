@@ -17,4 +17,5 @@ export interface Signers {
   owner: SignerWithAddress;
   user: SignerWithAddress;
   user2: SignerWithAddress;
+  user3: SignerWithAddress;
 }

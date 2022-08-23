@@ -134,6 +134,14 @@ describe("GroupMinter", function () {
         ).to.be.revertedWith("Not start");
       });
     });
+    it("should be reverted after public mint started", async function () {
+      const { wlPrice, wlStartTime, groupId } = await createGroupFixture(this.nervape, this.minter, this.signers);
+      await withIncreaseTime(310, async () => {
+        await expect(
+          this.minter.connect(this.signers.user).whitelistMint(groupId, { value: wlPrice }),
+        ).to.be.revertedWith("Has ended");
+      });
+    });
     it("should succeed and send payment value to recipient", async function () {
       const { classIds, wlPrice, wlStartTime, groupId } = await createGroupFixture(
         this.nervape,
@@ -239,10 +247,10 @@ describe("GroupMinter", function () {
       const afterBalance = await ethers.provider.getBalance(this.signers.owner.address);
       expect(afterBalance.sub(beforeBalance)).to.eq(price.mul(3));
 
-      // for(let i = 0; i < classIds.length; i++){
-      //   const tokens = await this.nervape.tokensOfOwnerByClass(this.signers.user.address, classIds[i])
-      //   console.log(tokens)
-      // }
+      for (let i = 0; i < classIds.length; i++) {
+        const tokens = await this.nervape.tokensOfOwnerByClass(this.signers.user.address, classIds[i]);
+        console.log(tokens);
+      }
 
       expect(await this.nervape.balanceOf(this.signers.user.address)).to.eq(3);
     });
