@@ -49,6 +49,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
+      name: "BridgeMinter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BridgeMinter__factory>;
+    getContractFactory(
       name: "CampaignMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CampaignMinter__factory>;
@@ -122,6 +126,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "BridgeMinter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BridgeMinter>;
     getContractAt(
       name: "CampaignMinter",
       address: string,

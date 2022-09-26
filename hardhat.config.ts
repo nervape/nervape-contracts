@@ -149,7 +149,7 @@ const config: HardhatUserConfig = {
     runOnCompile: true,
     clear: true,
     flat: true,
-    only: [":Nervape", ":GroupMinter", ":CampaignMinter", ":StoryVoting"],
+    only: [":Nervape", ":GroupMinter", ":CampaignMinter", ":StoryVoting", ":BridgeMinter"],
     spacing: 2,
     format: "json",
   },

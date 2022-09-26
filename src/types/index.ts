@@ -28,6 +28,8 @@ export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC16
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
+export type { BridgeMinter } from "./contracts/BridgeMinter";
+export { BridgeMinter__factory } from "./factories/contracts/BridgeMinter__factory";
 export type { CampaignMinter } from "./contracts/CampaignMinter";
 export { CampaignMinter__factory } from "./factories/contracts/CampaignMinter__factory";
 export type { GroupMinter } from "./contracts/GroupMinter";

@@ -3,6 +3,8 @@ import { task, types } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
 import type {
+  BridgeMinter,
+  BridgeMinter__factory,
   CampaignMinter,
   CampaignMinter__factory,
   GroupMinter,
@@ -72,6 +74,21 @@ task("deploy:all").setAction(async function (taskArguments: TaskArguments, { eth
   await character.setMinter(groupMinter.address);
   await character.setMinter(storyVoting.address);
   await scene.setMinter(campaignMinter.address);
+
+  const bridgeMinterFactory = <BridgeMinter__factory>await ethers.getContractFactory("BridgeMinter");
+  const bridgeMinter = <BridgeMinter>(
+    await bridgeMinterFactory.connect(signers[0]).deploy(character.address, scene.address, item.address)
+  );
+  await bridgeMinter.deployed();
+
+  console.log("BridgeMinter deployed to: ", bridgeMinter.address);
+
+  const operator = "0xcB8E18CB278e9274895530461dCe2A35834a120E";
+  await bridgeMinter.setOperator(operator);
+
+  await character.setBridge(bridgeMinter.address);
+  await scene.setBridge(bridgeMinter.address);
+  await item.setBridge(bridgeMinter.address);
 });
 
 task("deploy:addAllClasses").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
@@ -107,6 +124,12 @@ task("deploy:addAllClasses").setAction(async function (taskArguments: TaskArgume
 
   await character.addNewClass(256, 5); // 16
   console.log("add new class: ", 16);
+
+  await character.addNewClass(256, 5); // 17
+  console.log("add new class: ", 17);
+
+  await character.addNewClass(256, 5); // 18
+  console.log("add new class: ", 18);
 
   const scene: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Scene"));
 
@@ -200,6 +223,11 @@ task("deploy:character").setAction(async function (taskArguments: TaskArguments,
   }
   await nervape.addNewClass(10, 0); // Mirana Special
   console.log("add bridge class: ", 8);
+
+  for (let i = 9; i <= 20; i++) {
+    await nervape.addNewClass(256, 0); // for test
+    console.log("add class: ", i);
+  }
 });
 
 task("deploy:addClass")
@@ -232,6 +260,11 @@ task("deploy:scene").setAction(async function (taskArguments: TaskArguments, { e
   console.log("add scene groovy party");
   await nervape.addNewClass(128, 0); // story 001
   console.log("add scene story 001");
+
+  for (let i = 2; i <= 5; i++) {
+    await nervape.addNewClass(256, 0); // for test
+    console.log("add scene class: ", i);
+  }
 });
 
 task("deploy:item").setAction(async function (taskArguments: TaskArguments, { ethers }) {
@@ -249,6 +282,19 @@ task("deploy:item").setAction(async function (taskArguments: TaskArguments, { et
   console.log("Nervape item deployed to: ", nervape.address);
 });
 
+task("deploy:BridgeMinter").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const character = getDeployment(network.name, "Character");
+  const scene = getDeployment(network.name, "Scene");
+  const item = getDeployment(network.name, "Item");
+  const minterFactory: BridgeMinter__factory = <BridgeMinter__factory>await ethers.getContractFactory("BridgeMinter");
+  const minter: BridgeMinter = <BridgeMinter>await minterFactory.connect(signers[0]).deploy(character, scene, item);
+  await minter.deployed();
+  console.log("BridgeMinter deployed to: ", minter.address);
+
+  await minter.setOperator("0xcB8E18CB278e9274895530461dCe2A35834a120E");
+});
+
 task("deploy:GroupMinter")
   .addParam("character", "character contract address")
   .addParam("recipient", "payment recipient")
@@ -261,6 +307,26 @@ task("deploy:GroupMinter")
     await minter.deployed();
     console.log("GroupMinter deployed to: ", minter.address);
   });
+
+task("Nervape:setBridge").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const nervapeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+
+  const bridge = getDeployment(network.name, "BridgeMinter");
+  const character: Nervape = <Nervape>(
+    await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Character"))
+  );
+  await character.setBridge(bridge);
+  console.log("character set bridge to ", bridge);
+
+  const scene: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Scene"));
+  await scene.setBridge(bridge);
+  console.log("scene set bridge to ", bridge);
+
+  const item: Nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "Item"));
+  await item.setBridge(bridge);
+  console.log("item set bridge to ", bridge);
+});
 
 task("Nervape:setMinter")
   .addParam("nervape", "contract address of nervape")
