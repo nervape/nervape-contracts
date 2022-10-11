@@ -1331,6 +1331,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts-upgradeable@npm:^4.5.0":
+  version: 4.7.3
+  resolution: "@openzeppelin/contracts-upgradeable@npm:4.7.3"
+  checksum: c9ffb40cb847a975d440204fc6a811f43af960050242f707332b984d29bd16dc242ffa0935de61867aeb9e0357fadedb16b09b276deda5e9775582face831021
+  languageName: node
+  linkType: hard
+
 "@openzeppelin/contracts@npm:^4.5.0":
   version: 4.7.0
   resolution: "@openzeppelin/contracts@npm:4.7.0"
@@ -5352,6 +5359,13 @@ __metadata:
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
   checksum: 65b5df55a8bab92229ab2b40dad3b387fad24613263d103a97f91c9fe43ceb21965cd3392b1ccb5d77088021e525c4e0481adb309625d0cb94ade1d1fb8dc17e
+  languageName: node
+  linkType: hard
+
+"erc721a@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "erc721a@npm:4.2.3"
+  checksum: 0b2223678219d9b4a228da880cca9aab396ebe9cb59baf34a5501d4d9d297024d492ee5335c1983cd4c3bd15deef5e162c4837d27ac5ab5bf66e01591ead425c
   languageName: node
   linkType: hard
 
@@ -10633,6 +10647,7 @@ __metadata:
     "@nomiclabs/hardhat-etherscan": ^3.1.0
     "@nomiclabs/hardhat-waffle": ^2.0.3
     "@openzeppelin/contracts": ^4.5.0
+    "@openzeppelin/contracts-upgradeable": ^4.5.0
     "@trivago/prettier-plugin-sort-imports": ^3.2.0
     "@typechain/ethers-v5": ^10.1.0
     "@typechain/hardhat": ^6.1.2
@@ -10647,6 +10662,7 @@ __metadata:
     cross-env: ^7.0.3
     cz-conventional-changelog: ^3.3.0
     dotenv: ^16.0.1
+    erc721a: ^4.2.3
     eslint: ^8.18.0
     eslint-config-prettier: ^8.5.0
     ethereum-waffle: ^3.4.4

@@ -17,6 +17,34 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
+      name: "IERC1822Proxiable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1822Proxiable__factory>;
+    getContractFactory(
+      name: "IBeacon",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IBeacon__factory>;
+    getContractFactory(
+      name: "ERC1967Proxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1967Proxy__factory>;
+    getContractFactory(
+      name: "ERC1967Upgrade",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1967Upgrade__factory>;
+    getContractFactory(
+      name: "Proxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Proxy__factory>;
+    getContractFactory(
+      name: "ProxyAdmin",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ProxyAdmin__factory>;
+    getContractFactory(
+      name: "TransparentUpgradeableProxy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TransparentUpgradeableProxy__factory>;
+    getContractFactory(
       name: "ERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721__factory>;
@@ -57,6 +85,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CampaignMinter__factory>;
     getContractFactory(
+      name: "Creatape",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Creatape__factory>;
+    getContractFactory(
       name: "GroupMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.GroupMinter__factory>;
@@ -80,12 +112,67 @@ declare module "hardhat/types/runtime" {
       name: "Whitelist",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Whitelist__factory>;
+    getContractFactory(
+      name: "ERC721A__IERC721Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721A__IERC721Receiver__factory>;
+    getContractFactory(
+      name: "ERC721A",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721A__factory>;
+    getContractFactory(
+      name: "ERC721AQueryable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721AQueryable__factory>;
+    getContractFactory(
+      name: "IERC721AQueryable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721AQueryable__factory>;
+    getContractFactory(
+      name: "IERC721A",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721A__factory>;
 
     getContractAt(
       name: "Ownable",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "IERC1822Proxiable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1822Proxiable>;
+    getContractAt(
+      name: "IBeacon",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IBeacon>;
+    getContractAt(
+      name: "ERC1967Proxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1967Proxy>;
+    getContractAt(
+      name: "ERC1967Upgrade",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1967Upgrade>;
+    getContractAt(
+      name: "Proxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Proxy>;
+    getContractAt(
+      name: "ProxyAdmin",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ProxyAdmin>;
+    getContractAt(
+      name: "TransparentUpgradeableProxy",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TransparentUpgradeableProxy>;
     getContractAt(
       name: "ERC721",
       address: string,
@@ -137,6 +224,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.CampaignMinter>;
     getContractAt(
+      name: "Creatape",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Creatape>;
+    getContractAt(
       name: "GroupMinter",
       address: string,
       signer?: ethers.Signer
@@ -166,6 +258,31 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Whitelist>;
+    getContractAt(
+      name: "ERC721A__IERC721Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721A__IERC721Receiver>;
+    getContractAt(
+      name: "ERC721A",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721A>;
+    getContractAt(
+      name: "ERC721AQueryable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721AQueryable>;
+    getContractAt(
+      name: "IERC721AQueryable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721AQueryable>;
+    getContractAt(
+      name: "IERC721A",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721A>;
 
     // default types
     getContractFactory(

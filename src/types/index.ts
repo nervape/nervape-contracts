@@ -5,13 +5,30 @@
 /* eslint-disable */
 import type * as openzeppelin from "./@openzeppelin";
 import type * as contracts from "./contracts";
+import type * as erc721A from "./erc721a";
 
 export type { openzeppelin };
 
 export type { contracts };
+
+export type { erc721A };
 export * as factories from "./factories";
 export type { Ownable } from "./@openzeppelin/contracts/access/Ownable";
 export { Ownable__factory } from "./factories/@openzeppelin/contracts/access/Ownable__factory";
+export type { IERC1822Proxiable } from "./@openzeppelin/contracts/interfaces/draft-IERC1822.sol/IERC1822Proxiable";
+export { IERC1822Proxiable__factory } from "./factories/@openzeppelin/contracts/interfaces/draft-IERC1822.sol/IERC1822Proxiable__factory";
+export type { IBeacon } from "./@openzeppelin/contracts/proxy/beacon/IBeacon";
+export { IBeacon__factory } from "./factories/@openzeppelin/contracts/proxy/beacon/IBeacon__factory";
+export type { ERC1967Proxy } from "./@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy";
+export { ERC1967Proxy__factory } from "./factories/@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy__factory";
+export type { ERC1967Upgrade } from "./@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade";
+export { ERC1967Upgrade__factory } from "./factories/@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade__factory";
+export type { Proxy } from "./@openzeppelin/contracts/proxy/Proxy";
+export { Proxy__factory } from "./factories/@openzeppelin/contracts/proxy/Proxy__factory";
+export type { ProxyAdmin } from "./@openzeppelin/contracts/proxy/transparent/ProxyAdmin";
+export { ProxyAdmin__factory } from "./factories/@openzeppelin/contracts/proxy/transparent/ProxyAdmin__factory";
+export type { TransparentUpgradeableProxy } from "./@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy";
+export { TransparentUpgradeableProxy__factory } from "./factories/@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy__factory";
 export type { ERC721 } from "./@openzeppelin/contracts/token/ERC721/ERC721";
 export { ERC721__factory } from "./factories/@openzeppelin/contracts/token/ERC721/ERC721__factory";
 export type { ERC721Enumerable } from "./@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable";
@@ -32,6 +49,8 @@ export type { BridgeMinter } from "./contracts/BridgeMinter";
 export { BridgeMinter__factory } from "./factories/contracts/BridgeMinter__factory";
 export type { CampaignMinter } from "./contracts/CampaignMinter";
 export { CampaignMinter__factory } from "./factories/contracts/CampaignMinter__factory";
+export type { Creatape } from "./contracts/ethereum/Creatape";
+export { Creatape__factory } from "./factories/contracts/ethereum/Creatape__factory";
 export type { GroupMinter } from "./contracts/GroupMinter";
 export { GroupMinter__factory } from "./factories/contracts/GroupMinter__factory";
 export type { INervape } from "./contracts/INervape";
@@ -44,3 +63,13 @@ export type { StoryVoting } from "./contracts/StoryVoting";
 export { StoryVoting__factory } from "./factories/contracts/StoryVoting__factory";
 export type { Whitelist } from "./contracts/Whitelist";
 export { Whitelist__factory } from "./factories/contracts/Whitelist__factory";
+export type { ERC721A__IERC721Receiver } from "./erc721a/contracts/ERC721A.sol/ERC721A__IERC721Receiver";
+export { ERC721A__IERC721Receiver__factory } from "./factories/erc721a/contracts/ERC721A.sol/ERC721A__IERC721Receiver__factory";
+export type { ERC721A } from "./erc721a/contracts/ERC721A.sol/ERC721A";
+export { ERC721A__factory } from "./factories/erc721a/contracts/ERC721A.sol/ERC721A__factory";
+export type { ERC721AQueryable } from "./erc721a/contracts/extensions/ERC721AQueryable";
+export { ERC721AQueryable__factory } from "./factories/erc721a/contracts/extensions/ERC721AQueryable__factory";
+export type { IERC721AQueryable } from "./erc721a/contracts/extensions/IERC721AQueryable";
+export { IERC721AQueryable__factory } from "./factories/erc721a/contracts/extensions/IERC721AQueryable__factory";
+export type { IERC721A } from "./erc721a/contracts/IERC721A";
+export { IERC721A__factory } from "./factories/erc721a/contracts/IERC721A__factory";
