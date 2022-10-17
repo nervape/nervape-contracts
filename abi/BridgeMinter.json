@@ -15,6 +15,11 @@
         "internalType": "address",
         "name": "item_",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "special_",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -86,6 +91,11 @@
         "internalType": "uint256[]",
         "name": "itemIds",
         "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "specialIds",
+        "type": "uint256[]"
       }
     ],
     "name": "mintMany",
@@ -143,6 +153,32 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "character_",
+        "type": "address"
+      }
+    ],
+    "name": "setCharacter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "item_",
+        "type": "address"
+      }
+    ],
+    "name": "setItem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "operator_",
         "type": "address"
       }
@@ -150,6 +186,45 @@
     "name": "setOperator",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "scene_",
+        "type": "address"
+      }
+    ],
+    "name": "setScene",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "special_",
+        "type": "address"
+      }
+    ],
+    "name": "setSepcial",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "special",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

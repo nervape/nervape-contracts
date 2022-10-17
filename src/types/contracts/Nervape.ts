@@ -39,6 +39,7 @@ export interface NervapeInterface extends utils.Interface {
     "bridgeMint(address,uint256)": FunctionFragment;
     "classOf(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "initialize(string,string,uint16)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isMinter(address)": FunctionFragment;
     "lastClassId()": FunctionFragment;
@@ -46,6 +47,7 @@ export interface NervapeInterface extends utils.Interface {
     "mint(uint16,address)": FunctionFragment;
     "mintable(uint16)": FunctionFragment;
     "name()": FunctionFragment;
+    "nextTokenId(uint16)": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerMint(uint16,address)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -67,6 +69,7 @@ export interface NervapeInterface extends utils.Interface {
     "totalSupplyOfClass(uint16)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "typeId()": FunctionFragment;
   };
 
   getFunction(
@@ -79,6 +82,7 @@ export interface NervapeInterface extends utils.Interface {
       | "bridgeMint"
       | "classOf"
       | "getApproved"
+      | "initialize"
       | "isApprovedForAll"
       | "isMinter"
       | "lastClassId"
@@ -86,6 +90,7 @@ export interface NervapeInterface extends utils.Interface {
       | "mint"
       | "mintable"
       | "name"
+      | "nextTokenId"
       | "owner"
       | "ownerMint"
       | "ownerOf"
@@ -107,6 +112,7 @@ export interface NervapeInterface extends utils.Interface {
       | "totalSupplyOfClass"
       | "transferFrom"
       | "transferOwnership"
+      | "typeId"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -136,6 +142,14 @@ export interface NervapeInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "initialize",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
@@ -160,6 +174,10 @@ export interface NervapeInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "nextTokenId",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerMint",
@@ -251,6 +269,7 @@ export interface NervapeInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "typeId", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "addNewClass",
@@ -266,6 +285,7 @@ export interface NervapeInterface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -282,6 +302,10 @@ export interface NervapeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nextTokenId",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerMint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
@@ -342,16 +366,19 @@ export interface NervapeInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "typeId", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -379,6 +406,13 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -468,6 +502,13 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    initialize(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
+      typeId_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
@@ -498,6 +539,11 @@ export interface Nervape extends BaseContract {
     ): Promise<[number]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
+
+    nextTokenId(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -604,6 +650,8 @@ export interface Nervape extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    typeId(overrides?: CallOverrides): Promise<[number]>;
   };
 
   addNewClass(
@@ -643,6 +691,13 @@ export interface Nervape extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  initialize(
+    name_: PromiseOrValue<string>,
+    symbol_: PromiseOrValue<string>,
+    typeId_: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   isApprovedForAll(
     owner: PromiseOrValue<string>,
     operator: PromiseOrValue<string>,
@@ -673,6 +728,11 @@ export interface Nervape extends BaseContract {
   ): Promise<number>;
 
   name(overrides?: CallOverrides): Promise<string>;
+
+  nextTokenId(
+    classId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -780,6 +840,8 @@ export interface Nervape extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  typeId(overrides?: CallOverrides): Promise<number>;
+
   callStatic: {
     addNewClass(
       maxSupply: PromiseOrValue<BigNumberish>,
@@ -818,6 +880,13 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    initialize(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
+      typeId_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
@@ -848,6 +917,11 @@ export interface Nervape extends BaseContract {
     ): Promise<number>;
 
     name(overrides?: CallOverrides): Promise<string>;
+
+    nextTokenId(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -952,6 +1026,8 @@ export interface Nervape extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    typeId(overrides?: CallOverrides): Promise<number>;
   };
 
   filters: {
@@ -976,6 +1052,9 @@ export interface Nervape extends BaseContract {
       operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
+
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
@@ -1036,6 +1115,13 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
+      typeId_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
@@ -1066,6 +1152,11 @@ export interface Nervape extends BaseContract {
     ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    nextTokenId(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1172,6 +1263,8 @@ export interface Nervape extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    typeId(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1212,6 +1305,13 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    initialize(
+      name_: PromiseOrValue<string>,
+      symbol_: PromiseOrValue<string>,
+      typeId_: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: PromiseOrValue<string>,
       operator: PromiseOrValue<string>,
@@ -1242,6 +1342,11 @@ export interface Nervape extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    nextTokenId(
+      classId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1348,5 +1453,7 @@ export interface Nervape extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    typeId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

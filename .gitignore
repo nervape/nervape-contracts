@@ -16,7 +16,7 @@
 **/node_modules
 
 # files
-*.env
+*.env*
 *.log
 .pnp.*
 coverage.json

@@ -19,8 +19,9 @@ describe("Nervape", function () {
 
   beforeEach(async function () {
     const apeFactory: Nervape__factory = <Nervape__factory>await ethers.getContractFactory("Nervape");
-    this.nervape = <Nervape>await apeFactory.deploy("Nervape Character", "NAPE", "uri");
+    this.nervape = <Nervape>await apeFactory.deploy();
     await this.nervape.deployed();
+    await this.nervape.initialize("Name", "Symbol", 1);
     await this.nervape.setMinter(this.signers.minter.address);
   });
 
@@ -104,11 +105,14 @@ describe("Nervape", function () {
   describe("bridgeMint", function () {
     it("should only be minted by bridge", async function () {
       await this.nervape.addNewClass(3, 0);
-      await expect(this.nervape.connect(this.bridge).bridgeMint(this.signers.user.address, 10000)).to.be.revertedWith(
-        "Not bridge",
-      );
+      await expect(
+        this.nervape.connect(this.bridge).bridgeMint(this.signers.user.address, 10010001),
+      ).to.be.revertedWith("Not bridge");
       await this.nervape.setBridge(this.bridge.address);
-      await expect(this.nervape.connect(this.bridge).bridgeMint(this.signers.user.address, 10000)).to.not.reverted;
+      await expect(this.nervape.connect(this.bridge).bridgeMint(this.signers.user.address, 10010000)).to.revertedWith(
+        "Invalid token ID",
+      );
+      await expect(this.nervape.connect(this.bridge).bridgeMint(this.signers.user.address, 10010001)).to.not.reverted;
     });
   });
 

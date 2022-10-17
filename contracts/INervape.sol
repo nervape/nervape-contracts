@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721EnumerableUpgradeable.sol";
 
-interface INervape is IERC721Enumerable {
+interface INervape is IERC721EnumerableUpgradeable {
     function bridgeMint(address to, uint256 tokenId) external;
 
     function mint(uint16 classId, address to) external returns (uint256);

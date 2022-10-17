@@ -11,6 +11,10 @@ import type {
   GroupMinter__factory,
   Nervape,
   Nervape__factory,
+  Proxy,
+  ProxyAdmin,
+  ProxyAdmin__factory,
+  Proxy__factory,
   StoryVoting,
   StoryVoting__factory,
 } from "../../src/types";

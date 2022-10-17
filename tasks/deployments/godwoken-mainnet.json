@@ -1,32 +1,12 @@
 {
-  "Character": "",
-  "Scene": "",
-  "Item": "",
-  "GroupMinter": "",
-  "CampaignMinter": "",
-  "StoryVoting": "",
-  "groups": [
-    {
-      "characterClasses": [],
-      "price": "10 CKB",
-      "wlStartTime": 0,
-      "startTime": 0
-    }
-  ],
-  "campaigns": [
-    {
-      "characterClasses": [],
-      "sceneClass": 0,
-      "price": "10 CKB",
-      "claimStartTime": 0,
-      "claimEndTime": 0,
-      "startTime": 0
-    }
-  ],
-  "proposals": [
-    {
-      "classes": [],
-      "newClasses": []
-    }
-  ]
+  "ProxyAdmin": "0x348C77E790bbeF4D0ba8c70fB4E8E4F695DbdBb8",
+  "Nervape": "0x3011aF72fF9F82f01e23011BBEC540bE2911c5B5",
+
+  "CharacterProxy": "0x172C9EcBD1746172A6d81c6eAA28E8C979B76119",
+  "SceneProxy": "0x9e2807Ac0B0ad9487CfAEfd5dD68658D58550B96",
+  "ItemProxy": "0x8B0e796b6FA550a350EFA6f2Eea6355341b2303b",
+  "SpecialProxy": "0xC5D8522E4Fb3353Fc88daE477c205EED953511F4",
+
+  "BridgeMinter": "0xbFc0c078A37c75895d38Baa161F599c03DAA2197",
+  "BridgeMinterOperator": "0x07E97ccA16E1660FB01Ec4e19b021b39871bFe97"
 }

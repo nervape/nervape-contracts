@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "./INervape.sol";
 
-contract Nervape is INervape, ERC721Enumerable, Ownable {
+contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
     string public baseURI;
     address public bridge;
+    uint16 public typeId;
     uint16 public lastClassId;
 
     mapping(uint16 => uint16) _maxSupplies;
@@ -25,12 +26,14 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         _;
     }
 
-    constructor(
+    function initialize(
         string memory name_,
         string memory symbol_,
-        string memory uri_
-    ) ERC721(name_, symbol_) {
-        baseURI = uri_;
+        uint16 typeId_
+    ) public initializer {
+        __Ownable_init();
+        __ERC721_init(name_, symbol_);
+        typeId = typeId_;
     }
 
     function _checkClass(uint16 classId) internal view {
@@ -73,9 +76,16 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
     }
 
     function classOf(uint256 tokenId) public view returns (uint16) {
-        uint16 classId = uint16(tokenId / 10000);
+        require(tokenId > uint256(typeId) * 10000000, "Invalid type ID");
+        uint16 classId = uint16((tokenId - uint256(typeId) * 10000000) / 10000);
+        uint16 tokenNumber = uint16((tokenId - uint256(typeId) * 10000000) % 10000);
+        require(tokenNumber > 0, "Invalid token ID");
         _checkClass(classId);
         return classId;
+    }
+
+    function nextTokenId(uint16 classId) public view returns (uint256) {
+        return uint256(typeId) * 10000000 + uint256(classId) * 10000 + totalSupplyOfClass(classId) + 1;
     }
 
     function tokensOfOwnerByClass(address owner, uint16 classId) public view returns (uint256[] memory) {
@@ -106,7 +116,7 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
         _checkClass(classId);
         require(_reserves[classId] > 0, "No team reserves");
         for (uint16 i = 0; i < _reserves[classId]; i++) {
-            uint256 tokenId = uint256(classId) * 10000 + totalSupplyOfClass(classId);
+            uint256 tokenId = nextTokenId(classId);
             _totalSupplies[classId] += 1;
             _mint(to, tokenId);
         }
@@ -122,7 +132,7 @@ contract Nervape is INervape, ERC721Enumerable, Ownable {
     function mint(uint16 classId, address to) external onlyMinter returns (uint256) {
         _checkClass(classId);
         require(mintable(classId) > 0, "Exceeded max supply");
-        uint256 tokenId = uint256(classId) * 10000 + totalSupplyOfClass(classId);
+        uint256 tokenId = nextTokenId(classId);
         _totalSupplies[classId] += 1;
         _mint(to, tokenId);
         return tokenId;

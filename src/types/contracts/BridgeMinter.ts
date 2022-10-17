@@ -33,12 +33,17 @@ export interface BridgeMinterInterface extends utils.Interface {
   functions: {
     "character()": FunctionFragment;
     "item()": FunctionFragment;
-    "mintMany(address,uint256[],uint256[],uint256[])": FunctionFragment;
+    "mintMany(address,uint256[],uint256[],uint256[],uint256[])": FunctionFragment;
     "operator()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "scene()": FunctionFragment;
+    "setCharacter(address)": FunctionFragment;
+    "setItem(address)": FunctionFragment;
     "setOperator(address)": FunctionFragment;
+    "setScene(address)": FunctionFragment;
+    "setSepcial(address)": FunctionFragment;
+    "special()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
@@ -51,7 +56,12 @@ export interface BridgeMinterInterface extends utils.Interface {
       | "owner"
       | "renounceOwnership"
       | "scene"
+      | "setCharacter"
+      | "setItem"
       | "setOperator"
+      | "setScene"
+      | "setSepcial"
+      | "special"
       | "transferOwnership"
   ): FunctionFragment;
 
@@ -61,6 +71,7 @@ export interface BridgeMinterInterface extends utils.Interface {
     functionFragment: "mintMany",
     values: [
       PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>[],
       PromiseOrValue<BigNumberish>[]
@@ -74,9 +85,26 @@ export interface BridgeMinterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "scene", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "setCharacter",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setItem",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setOperator",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setScene",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSepcial",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(functionFragment: "special", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
@@ -93,9 +121,17 @@ export interface BridgeMinterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "scene", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "setCharacter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "setItem", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "setOperator",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setScene", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setSepcial", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "special", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -156,6 +192,7 @@ export interface BridgeMinter extends BaseContract {
       characterIds: PromiseOrValue<BigNumberish>[],
       sceneIds: PromiseOrValue<BigNumberish>[],
       itemIds: PromiseOrValue<BigNumberish>[],
+      specialIds: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -169,10 +206,32 @@ export interface BridgeMinter extends BaseContract {
 
     scene(overrides?: CallOverrides): Promise<[string]>;
 
+    setCharacter(
+      character_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setItem(
+      item_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setOperator(
       operator_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    setScene(
+      scene_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setSepcial(
+      special_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    special(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -189,6 +248,7 @@ export interface BridgeMinter extends BaseContract {
     characterIds: PromiseOrValue<BigNumberish>[],
     sceneIds: PromiseOrValue<BigNumberish>[],
     itemIds: PromiseOrValue<BigNumberish>[],
+    specialIds: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -202,10 +262,32 @@ export interface BridgeMinter extends BaseContract {
 
   scene(overrides?: CallOverrides): Promise<string>;
 
+  setCharacter(
+    character_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setItem(
+    item_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setOperator(
     operator_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  setScene(
+    scene_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setSepcial(
+    special_: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  special(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -222,6 +304,7 @@ export interface BridgeMinter extends BaseContract {
       characterIds: PromiseOrValue<BigNumberish>[],
       sceneIds: PromiseOrValue<BigNumberish>[],
       itemIds: PromiseOrValue<BigNumberish>[],
+      specialIds: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -233,10 +316,32 @@ export interface BridgeMinter extends BaseContract {
 
     scene(overrides?: CallOverrides): Promise<string>;
 
+    setCharacter(
+      character_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setItem(
+      item_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setOperator(
       operator_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setScene(
+      scene_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSepcial(
+      special_: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    special(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -265,6 +370,7 @@ export interface BridgeMinter extends BaseContract {
       characterIds: PromiseOrValue<BigNumberish>[],
       sceneIds: PromiseOrValue<BigNumberish>[],
       itemIds: PromiseOrValue<BigNumberish>[],
+      specialIds: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -278,10 +384,32 @@ export interface BridgeMinter extends BaseContract {
 
     scene(overrides?: CallOverrides): Promise<BigNumber>;
 
+    setCharacter(
+      character_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setItem(
+      item_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setOperator(
       operator_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    setScene(
+      scene_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setSepcial(
+      special_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    special(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -299,6 +427,7 @@ export interface BridgeMinter extends BaseContract {
       characterIds: PromiseOrValue<BigNumberish>[],
       sceneIds: PromiseOrValue<BigNumberish>[],
       itemIds: PromiseOrValue<BigNumberish>[],
+      specialIds: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -312,10 +441,32 @@ export interface BridgeMinter extends BaseContract {
 
     scene(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    setCharacter(
+      character_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setItem(
+      item_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setOperator(
       operator_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    setScene(
+      scene_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSepcial(
+      special_: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    special(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

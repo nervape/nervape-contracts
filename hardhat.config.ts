@@ -12,7 +12,7 @@ import "solidity-coverage";
 import "./tasks/accounts";
 import "./tasks/deploy";
 
-dotenvConfig({ path: resolve(__dirname, "./.env") });
+dotenvConfig({ path: resolve(__dirname, "./.env.mainnet") });
 
 // Ensure that we have all the environment variables we need.
 const mnemonic: string | undefined = process.env.MNEMONIC;
@@ -37,7 +37,7 @@ const chainIds = {
   "polygon-mumbai": 80001,
   rinkeby: 4,
   "godwoken-testnet": 71401,
-  godwoken: 71402,
+  "godwoken-mainnet": 71402,
   local: 31337,
 };
 
@@ -53,7 +53,7 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     case "godwoken-testnet":
       jsonRpcUrl = "https://godwoken-testnet-v1.ckbapp.dev";
       break;
-    case "godwoken":
+    case "godwoken-mainnet":
       jsonRpcUrl = "https://v1.mainnet.godwoken.io/rpc";
       break;
     case "local":
@@ -116,7 +116,7 @@ const config: HardhatUserConfig = {
     "polygon-mumbai": getChainConfig("polygon-mumbai"),
     rinkeby: getChainConfig("rinkeby"),
     "godwoken-testnet": getChainConfig("godwoken-testnet"),
-    godwoken: getChainConfig("godwoken"),
+    "godwoken-mainnet": getChainConfig("godwoken-mainnet"),
   },
   paths: {
     artifacts: "./artifacts",
