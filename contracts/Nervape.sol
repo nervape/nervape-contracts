@@ -11,9 +11,13 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
     uint16 public typeId;
     uint16 public lastClassId;
 
+    // map class id to max supply
     mapping(uint16 => uint16) _maxSupplies;
+    // map class id to total supply
     mapping(uint16 => uint16) _totalSupplies;
+    // map class id to team reserves
     mapping(uint16 => uint16) _reserves;
+    // map address to boolean to present minter
     mapping(address => bool) public isMinter;
 
     modifier onlyMinter() {
@@ -56,6 +60,7 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         bridge = bridge_;
     }
 
+    // Add new class and set `maxSupply` and team `reserved`
     function addNewClass(uint16 maxSupply, uint16 reserved) external onlyOwner {
         require(maxSupply <= 10000, "Max supply exceeds 10000");
         lastClassId += 1;
@@ -75,6 +80,7 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         return _maxSupplies[classId];
     }
 
+    // returns class id acording `tokenId`
     function classOf(uint256 tokenId) public view returns (uint16) {
         require(tokenId > uint256(typeId) * 10000000, "Invalid type ID");
         uint16 classId = uint16((tokenId - uint256(typeId) * 10000000) / 10000);
@@ -84,6 +90,7 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         return classId;
     }
 
+    // returns next tokenId of class `classId`
     function nextTokenId(uint16 classId) public view returns (uint256) {
         return uint256(typeId) * 10000000 + uint256(classId) * 10000 + totalSupplyOfClass(classId) + 1;
     }
@@ -106,12 +113,14 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         return tokenIds;
     }
 
+    // returns unminted count of class `classId`
     function mintable(uint16 classId) public view returns (uint16) {
         _checkClass(classId);
         require(maxSupplyOfClass(classId) >= _reserves[classId], "Max supply less than team reserved amount");
         return maxSupplyOfClass(classId) - totalSupplyOfClass(classId) - _reserves[classId];
     }
 
+    // Mint team reserved tokens of class `classId`
     function ownerMint(uint16 classId, address to) external onlyOwner {
         _checkClass(classId);
         require(_reserves[classId] > 0, "No team reserves");
@@ -120,8 +129,10 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
             _totalSupplies[classId] += 1;
             _mint(to, tokenId);
         }
+        _reserves[classId] = 0;
     }
 
+    // Mints one token `tokenId` to address `to` for bridging.
     function bridgeMint(address to, uint256 tokenId) external onlyBridge {
         uint16 classId = classOf(tokenId);
         require(mintable(classId) > 0, "Exceeded max supply");
@@ -129,6 +140,7 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         _mint(to, tokenId);
     }
 
+    // Mints one token of class `classId` to address `to`
     function mint(uint16 classId, address to) external onlyMinter returns (uint256) {
         _checkClass(classId);
         require(mintable(classId) > 0, "Exceeded max supply");

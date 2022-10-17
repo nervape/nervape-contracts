@@ -72,6 +72,15 @@ describe("Nervape", function () {
       await this.nervape.connect(this.signers.minter).mint(2, this.signers.user.address);
       expect(await this.nervape.mintable(2)).to.eq(250);
     });
+
+    it("returns mintable count after owner minted", async function () {
+      await this.nervape.addNewClass(10, 3);
+      expect(await this.nervape.mintable(1)).to.eq(7);
+
+      await this.nervape.ownerMint(1, this.signers.admin.address);
+
+      expect(await this.nervape.mintable(1)).to.eq(7);
+    });
   });
 
   describe("mint", function () {
