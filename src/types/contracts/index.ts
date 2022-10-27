@@ -11,6 +11,7 @@ export type { CampaignMinter } from "./CampaignMinter";
 export type { GroupMinter } from "./GroupMinter";
 export type { INervape } from "./INervape";
 export type { MerkleWhitelist } from "./MerkleWhitelist";
+export type { Multicall2 } from "./Multicall2";
 export type { Nervape } from "./Nervape";
 export type { StoryVoting } from "./StoryVoting";
 export type { Whitelist } from "./Whitelist";

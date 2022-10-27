@@ -149,9 +149,9 @@ const _abi = [
     name: "classOf",
     outputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -203,17 +203,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "classId",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "maxSupplyOfClass",
     outputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -222,9 +222,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "classId",
-        type: "uint16",
+        type: "uint256",
       },
       {
         internalType: "address",
@@ -246,17 +246,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "classId",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "mintable",
     outputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -428,17 +428,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "classId",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     name: "totalSupplyOfClass",
     outputs: [
       {
-        internalType: "uint16",
+        internalType: "uint256",
         name: "",
-        type: "uint16",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

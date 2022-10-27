@@ -109,14 +109,14 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "maxSupply",
-        "type": "uint16"
+        "type": "uint256"
       },
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "reserved",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "addNewClass",
@@ -216,9 +216,9 @@
     "name": "classOf",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -256,9 +256,9 @@
         "type": "string"
       },
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "typeId_",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "initialize",
@@ -314,9 +314,9 @@
     "name": "lastClassId",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -325,17 +325,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "maxSupplyOfClass",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -344,9 +344,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -368,17 +368,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "mintable",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -400,9 +400,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "nextTokenId",
@@ -432,9 +432,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       },
       {
         "internalType": "address",
@@ -696,9 +696,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "tokensOfOwnerByClass",
@@ -728,17 +728,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "classId",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "totalSupplyOfClass",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -785,9 +785,9 @@
     "name": "typeId",
     "outputs": [
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

@@ -7,6 +7,7 @@ export { CampaignMinter__factory } from "./CampaignMinter__factory";
 export { GroupMinter__factory } from "./GroupMinter__factory";
 export { INervape__factory } from "./INervape__factory";
 export { MerkleWhitelist__factory } from "./MerkleWhitelist__factory";
+export { Multicall2__factory } from "./Multicall2__factory";
 export { Nervape__factory } from "./Nervape__factory";
 export { StoryVoting__factory } from "./StoryVoting__factory";
 export { Whitelist__factory } from "./Whitelist__factory";

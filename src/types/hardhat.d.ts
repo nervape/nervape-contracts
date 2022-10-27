@@ -113,6 +113,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MerkleWhitelist__factory>;
     getContractFactory(
+      name: "Multicall2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Multicall2__factory>;
+    getContractFactory(
       name: "Nervape",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Nervape__factory>;
@@ -270,6 +274,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.MerkleWhitelist>;
+    getContractAt(
+      name: "Multicall2",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Multicall2>;
     getContractAt(
       name: "Nervape",
       address: string,

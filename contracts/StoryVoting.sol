@@ -14,16 +14,17 @@ contract StoryVoting is Ownable {
     }
 
     struct Proposal {
-        uint16[] classIds;
         uint8 choices;
         uint8 finalizedChoice;
         bool canceled;
         bool finalized;
         uint256 startTime;
         uint256 endTime;
-        mapping(uint16 => uint16) newClassIds;
+        uint256[] classIds;
+        // map old class id to new class id
+        mapping(uint256 => uint256) newClassIds;
         // choice => character classId => votes
-        mapping(uint8 => mapping(uint16 => uint256)) supportedVotes;
+        mapping(uint8 => mapping(uint256 => uint256)) supportedVotes;
     }
 
     struct Vote {
@@ -63,8 +64,8 @@ contract StoryVoting is Ownable {
     }
 
     function createProposal(
-        uint16[] calldata classIds,
-        uint16[] calldata newClassIds,
+        uint256[] calldata classIds,
+        uint256[] calldata newClassIds,
         uint256 startTime,
         uint256 endTime,
         uint8 choices
@@ -89,8 +90,8 @@ contract StoryVoting is Ownable {
         public
         view
         returns (
-            uint16[] memory classIds,
-            uint16[] memory newClassIds,
+            uint256[] memory classIds,
+            uint256[] memory newClassIds,
             uint256 startTime,
             uint256 endTime,
             uint8 choices,
@@ -104,7 +105,7 @@ contract StoryVoting is Ownable {
         endTime = proposal.endTime;
         choices = proposal.choices;
         finalizedChoice = proposal.finalizedChoice;
-        newClassIds = new uint16[](classIds.length);
+        newClassIds = new uint256[](classIds.length);
         for (uint256 i = 0; i < classIds.length; i++) {
             newClassIds[i] = proposal.newClassIds[classIds[i]];
         }
@@ -122,7 +123,7 @@ contract StoryVoting is Ownable {
         require(stateOf(proposalId) == ProposalState.Active, "Voting is not active");
 
         for (uint256 i = 0; i < tokenIds.length; i++) {
-            uint16 classId = INervape(character).classOf(tokenIds[i]);
+            uint256 classId = INervape(character).classOf(tokenIds[i]);
             require(proposal.newClassIds[classId] > 0, "Not votable character");
 
             INervape(character).transferFrom(msg.sender, address(this), tokenIds[i]);
@@ -253,7 +254,7 @@ contract StoryVoting is Ownable {
                 continue;
             }
             if (proposal.finalized && _votes[i].support == proposal.finalizedChoice) {
-                uint16 classId = INervape(character).classOf(_votes[i].tokenId);
+                uint256 classId = INervape(character).classOf(_votes[i].tokenId);
                 // burn ape and mint new Ape
                 INervape(character).transferFrom(address(this), DEAD, _votes[i].tokenId);
                 INervape(character).mint(proposal.newClassIds[classId], msg.sender);

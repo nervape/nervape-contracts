@@ -31,7 +31,7 @@ import type {
 
 export interface NervapeInterface extends utils.Interface {
   functions: {
-    "addNewClass(uint16,uint16)": FunctionFragment;
+    "addNewClass(uint256,uint256)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "baseURI()": FunctionFragment;
@@ -39,17 +39,17 @@ export interface NervapeInterface extends utils.Interface {
     "bridgeMint(address,uint256)": FunctionFragment;
     "classOf(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "initialize(string,string,uint16)": FunctionFragment;
+    "initialize(string,string,uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isMinter(address)": FunctionFragment;
     "lastClassId()": FunctionFragment;
-    "maxSupplyOfClass(uint16)": FunctionFragment;
-    "mint(uint16,address)": FunctionFragment;
-    "mintable(uint16)": FunctionFragment;
+    "maxSupplyOfClass(uint256)": FunctionFragment;
+    "mint(uint256,address)": FunctionFragment;
+    "mintable(uint256)": FunctionFragment;
     "name()": FunctionFragment;
-    "nextTokenId(uint16)": FunctionFragment;
+    "nextTokenId(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "ownerMint(uint16,address)": FunctionFragment;
+    "ownerMint(uint256,address)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "removeMinter(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -64,9 +64,9 @@ export interface NervapeInterface extends utils.Interface {
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
-    "tokensOfOwnerByClass(address,uint16)": FunctionFragment;
+    "tokensOfOwnerByClass(address,uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
-    "totalSupplyOfClass(uint16)": FunctionFragment;
+    "totalSupplyOfClass(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "typeId()": FunctionFragment;
@@ -495,7 +495,7 @@ export interface Nervape extends BaseContract {
     classOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -520,12 +520,12 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    lastClassId(overrides?: CallOverrides): Promise<[number]>;
+    lastClassId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     mint(
       classId: PromiseOrValue<BigNumberish>,
@@ -536,7 +536,7 @@ export interface Nervape extends BaseContract {
     mintable(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -637,7 +637,7 @@ export interface Nervape extends BaseContract {
     totalSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     transferFrom(
       from: PromiseOrValue<string>,
@@ -651,7 +651,7 @@ export interface Nervape extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    typeId(overrides?: CallOverrides): Promise<[number]>;
+    typeId(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   addNewClass(
@@ -684,7 +684,7 @@ export interface Nervape extends BaseContract {
   classOf(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   getApproved(
     tokenId: PromiseOrValue<BigNumberish>,
@@ -709,12 +709,12 @@ export interface Nervape extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  lastClassId(overrides?: CallOverrides): Promise<number>;
+  lastClassId(overrides?: CallOverrides): Promise<BigNumber>;
 
   maxSupplyOfClass(
     classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   mint(
     classId: PromiseOrValue<BigNumberish>,
@@ -725,7 +725,7 @@ export interface Nervape extends BaseContract {
   mintable(
     classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -826,7 +826,7 @@ export interface Nervape extends BaseContract {
   totalSupplyOfClass(
     classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   transferFrom(
     from: PromiseOrValue<string>,
@@ -840,7 +840,7 @@ export interface Nervape extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  typeId(overrides?: CallOverrides): Promise<number>;
+  typeId(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
     addNewClass(
@@ -873,7 +873,7 @@ export interface Nervape extends BaseContract {
     classOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -898,12 +898,12 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    lastClassId(overrides?: CallOverrides): Promise<number>;
+    lastClassId(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     mint(
       classId: PromiseOrValue<BigNumberish>,
@@ -914,7 +914,7 @@ export interface Nervape extends BaseContract {
     mintable(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -1013,7 +1013,7 @@ export interface Nervape extends BaseContract {
     totalSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     transferFrom(
       from: PromiseOrValue<string>,
@@ -1027,7 +1027,7 @@ export interface Nervape extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    typeId(overrides?: CallOverrides): Promise<number>;
+    typeId(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {

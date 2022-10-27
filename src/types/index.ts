@@ -63,6 +63,8 @@ export type { INervape } from "./contracts/INervape";
 export { INervape__factory } from "./factories/contracts/INervape__factory";
 export type { MerkleWhitelist } from "./contracts/MerkleWhitelist";
 export { MerkleWhitelist__factory } from "./factories/contracts/MerkleWhitelist__factory";
+export type { Multicall2 } from "./contracts/Multicall2";
+export { Multicall2__factory } from "./factories/contracts/Multicall2__factory";
 export type { Nervape } from "./contracts/Nervape";
 export { Nervape__factory } from "./factories/contracts/Nervape__factory";
 export type { StoryVoting } from "./contracts/StoryVoting";

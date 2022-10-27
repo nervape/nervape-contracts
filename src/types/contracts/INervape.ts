@@ -37,9 +37,9 @@ export interface INervapeInterface extends utils.Interface {
     "classOf(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "maxSupplyOfClass(uint16)": FunctionFragment;
-    "mint(uint16,address)": FunctionFragment;
-    "mintable(uint16)": FunctionFragment;
+    "maxSupplyOfClass(uint256)": FunctionFragment;
+    "mint(uint256,address)": FunctionFragment;
+    "mintable(uint256)": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
@@ -48,7 +48,7 @@ export interface INervapeInterface extends utils.Interface {
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
-    "totalSupplyOfClass(uint16)": FunctionFragment;
+    "totalSupplyOfClass(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
@@ -315,7 +315,7 @@ export interface INervape extends BaseContract {
     classOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -331,7 +331,7 @@ export interface INervape extends BaseContract {
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     mint(
       classId: PromiseOrValue<BigNumberish>,
@@ -342,7 +342,7 @@ export interface INervape extends BaseContract {
     mintable(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -391,7 +391,7 @@ export interface INervape extends BaseContract {
     totalSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[number]>;
+    ): Promise<[BigNumber]>;
 
     transferFrom(
       from: PromiseOrValue<string>,
@@ -421,7 +421,7 @@ export interface INervape extends BaseContract {
   classOf(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   getApproved(
     tokenId: PromiseOrValue<BigNumberish>,
@@ -437,7 +437,7 @@ export interface INervape extends BaseContract {
   maxSupplyOfClass(
     classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   mint(
     classId: PromiseOrValue<BigNumberish>,
@@ -448,7 +448,7 @@ export interface INervape extends BaseContract {
   mintable(
     classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   ownerOf(
     tokenId: PromiseOrValue<BigNumberish>,
@@ -497,7 +497,7 @@ export interface INervape extends BaseContract {
   totalSupplyOfClass(
     classId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<number>;
+  ): Promise<BigNumber>;
 
   transferFrom(
     from: PromiseOrValue<string>,
@@ -527,7 +527,7 @@ export interface INervape extends BaseContract {
     classOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -543,7 +543,7 @@ export interface INervape extends BaseContract {
     maxSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     mint(
       classId: PromiseOrValue<BigNumberish>,
@@ -554,7 +554,7 @@ export interface INervape extends BaseContract {
     mintable(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -603,7 +603,7 @@ export interface INervape extends BaseContract {
     totalSupplyOfClass(
       classId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<number>;
+    ): Promise<BigNumber>;
 
     transferFrom(
       from: PromiseOrValue<string>,

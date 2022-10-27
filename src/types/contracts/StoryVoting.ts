@@ -32,7 +32,7 @@ import type {
 export interface StoryVotingInterface extends utils.Interface {
   functions: {
     "character()": FunctionFragment;
-    "createProposal(uint16[],uint16[],uint256,uint256,uint8)": FunctionFragment;
+    "createProposal(uint256[],uint256[],uint256,uint256,uint8)": FunctionFragment;
     "finalize(uint256)": FunctionFragment;
     "getAllVotes(uint256)": FunctionFragment;
     "getProposal(uint256)": FunctionFragment;
@@ -284,9 +284,17 @@ export interface StoryVoting extends BaseContract {
       proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [number[], number[], BigNumber, BigNumber, number, number, number] & {
-        classIds: number[];
-        newClassIds: number[];
+      [
+        BigNumber[],
+        BigNumber[],
+        BigNumber,
+        BigNumber,
+        number,
+        number,
+        number
+      ] & {
+        classIds: BigNumber[];
+        newClassIds: BigNumber[];
         startTime: BigNumber;
         endTime: BigNumber;
         choices: number;
@@ -404,9 +412,9 @@ export interface StoryVoting extends BaseContract {
     proposalId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [number[], number[], BigNumber, BigNumber, number, number, number] & {
-      classIds: number[];
-      newClassIds: number[];
+    [BigNumber[], BigNumber[], BigNumber, BigNumber, number, number, number] & {
+      classIds: BigNumber[];
+      newClassIds: BigNumber[];
       startTime: BigNumber;
       endTime: BigNumber;
       choices: number;
@@ -524,9 +532,17 @@ export interface StoryVoting extends BaseContract {
       proposalId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [number[], number[], BigNumber, BigNumber, number, number, number] & {
-        classIds: number[];
-        newClassIds: number[];
+      [
+        BigNumber[],
+        BigNumber[],
+        BigNumber,
+        BigNumber,
+        number,
+        number,
+        number
+      ] & {
+        classIds: BigNumber[];
+        newClassIds: BigNumber[];
         startTime: BigNumber;
         endTime: BigNumber;
         choices: number;
