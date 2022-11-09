@@ -40,7 +40,7 @@ contract BridgeMinter is Ownable {
         item = item_;
     }
 
-    function setSepcial(address special_) external onlyOwner {
+    function setSpecial(address special_) external onlyOwner {
         special = special_;
     }
 

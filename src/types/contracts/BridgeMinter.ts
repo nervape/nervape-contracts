@@ -42,7 +42,7 @@ export interface BridgeMinterInterface extends utils.Interface {
     "setItem(address)": FunctionFragment;
     "setOperator(address)": FunctionFragment;
     "setScene(address)": FunctionFragment;
-    "setSepcial(address)": FunctionFragment;
+    "setSpecial(address)": FunctionFragment;
     "special()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -60,7 +60,7 @@ export interface BridgeMinterInterface extends utils.Interface {
       | "setItem"
       | "setOperator"
       | "setScene"
-      | "setSepcial"
+      | "setSpecial"
       | "special"
       | "transferOwnership"
   ): FunctionFragment;
@@ -101,7 +101,7 @@ export interface BridgeMinterInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setSepcial",
+    functionFragment: "setSpecial",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "special", values?: undefined): string;
@@ -130,7 +130,7 @@ export interface BridgeMinterInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setScene", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setSepcial", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setSpecial", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "special", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
@@ -226,7 +226,7 @@ export interface BridgeMinter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setSepcial(
+    setSpecial(
       special_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -282,7 +282,7 @@ export interface BridgeMinter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setSepcial(
+  setSpecial(
     special_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -336,7 +336,7 @@ export interface BridgeMinter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setSepcial(
+    setSpecial(
       special_: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -404,7 +404,7 @@ export interface BridgeMinter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setSepcial(
+    setSpecial(
       special_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -461,7 +461,7 @@ export interface BridgeMinter extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setSepcial(
+    setSpecial(
       special_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

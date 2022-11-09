@@ -132,7 +132,7 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         _reserves[classId] = 0;
     }
 
-    // Mints one token `tokenId` to address `to` for bridging.
+    // Mint one token `tokenId` to address `to` for bridging.
     function bridgeMint(address to, uint256 tokenId) external onlyBridge {
         uint256 classId = classOf(tokenId);
         require(mintable(classId) > 0, "Exceeded max supply");
@@ -140,7 +140,7 @@ contract Nervape is INervape, ERC721EnumerableUpgradeable, OwnableUpgradeable {
         _mint(to, tokenId);
     }
 
-    // Mints one token of class `classId` to address `to`
+    // Mint one token of class `classId` to address `to`
     function mint(uint256 classId, address to) external onlyMinter returns (uint256) {
         _checkClass(classId);
         require(mintable(classId) > 0, "Exceeded max supply");

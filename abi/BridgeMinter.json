@@ -209,7 +209,7 @@
         "type": "address"
       }
     ],
-    "name": "setSepcial",
+    "name": "setSpecial",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

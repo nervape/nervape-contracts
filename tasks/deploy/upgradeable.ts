@@ -63,7 +63,7 @@ task("deploy:characterProxy").setAction(async function (taskArguments: TaskArgum
 
   const iface = Nervape__factory.createInterface();
 
-  const data = iface.encodeFunctionData("initialize", ["Nervape Test1", "NT1", 1]);
+  const data = iface.encodeFunctionData("initialize", ["Nervape Character", "NAC", 1]);
 
   const logic = getDeployment(network.name, "Nervape");
   const admin = getDeployment(network.name, "ProxyAdmin");
@@ -81,7 +81,7 @@ task("deploy:sceneProxy").setAction(async function (taskArguments: TaskArguments
 
   const iface = Nervape__factory.createInterface();
   // Nervape Scene, NAS
-  const data = iface.encodeFunctionData("initialize", ["Nervape Test2", "NT2", 4]);
+  const data = iface.encodeFunctionData("initialize", ["Nervape Scene", "NAS", 4]);
 
   const logic = getDeployment(network.name, "Nervape");
   const admin = getDeployment(network.name, "ProxyAdmin");
@@ -98,7 +98,7 @@ task("deploy:itemProxy").setAction(async function (taskArguments: TaskArguments,
   );
 
   const iface = Nervape__factory.createInterface();
-  const data = iface.encodeFunctionData("initialize", ["Nervape Test3", "NT3", 3]);
+  const data = iface.encodeFunctionData("initialize", ["Nervape Item", "NAI", 3]);
 
   const logic = getDeployment(network.name, "Nervape");
   const admin = getDeployment(network.name, "ProxyAdmin");
@@ -115,7 +115,7 @@ task("deploy:specialProxy").setAction(async function (taskArguments: TaskArgumen
   );
 
   const iface = Nervape__factory.createInterface();
-  const data = iface.encodeFunctionData("initialize", ["Nervape Test4", "NT4", 9]);
+  const data = iface.encodeFunctionData("initialize", ["Nervape Special", "NASP", 9]);
 
   const logic = getDeployment(network.name, "Nervape");
   const admin = getDeployment(network.name, "ProxyAdmin");
@@ -130,10 +130,15 @@ task("deploy:addCharacterClasses").setAction(async function (taskArguments: Task
   const nervapeFactory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const character = getDeployment(network.name, "CharacterProxy");
   const nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(character);
-  for (let id = 1; id <= 2; id++) {
-    await nervape.addNewClass(155, 5);
+  for (let id = 1; id <= 7; id++) {
+    await nervape.addNewClass(256, 0);
     console.log("add bridge class: ", id);
   }
+
+  console.log("baseURI = ", await nervape.baseURI());
+  const tx = await nervape.setBaseURI("https://api.nervape.com/metadata/character/");
+  const receipt = await tx.wait();
+  console.log("setBaseURI = ", receipt.status);
 });
 
 task("deploy:addSceneClasses").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
@@ -142,15 +147,13 @@ task("deploy:addSceneClasses").setAction(async function (taskArguments: TaskArgu
   const scene = getDeployment(network.name, "SceneProxy");
   const nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(scene);
 
-  for (let id = 1; id <= 1; id++) {
-    await nervape.addNewClass(100, 0);
-    console.log("add bridge class: ", id);
-  }
+  await nervape.addNewClass(256, 0); // Groovy Party
+  await nervape.addNewClass(128, 0); // Story 001
 
-  console.log("baseURI = ", await nervape.baseURI());
-  const tx = await nervape.setBaseURI("https://t-api.nervape.com/metadata/scene/");
+  const tx = await nervape.setBaseURI("https://api.nervape.com/metadata/scene/");
   const receipt = await tx.wait();
   console.log("setBaseURI = ", receipt.status);
+  console.log("baseURI = ", await nervape.baseURI());
 });
 
 task("deploy:addItemClasses").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
@@ -158,14 +161,15 @@ task("deploy:addItemClasses").setAction(async function (taskArguments: TaskArgum
   const nervapeFactory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const item = getDeployment(network.name, "ItemProxy");
   const nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(item);
-  for (let id = 1; id <= 1; id++) {
-    await nervape.addNewClass(100, 0);
+  for (let id = 1; id <= 2; id++) {
+    await nervape.addNewClass(256, 0);
     console.log("add bridge class: ", id);
   }
-  console.log("baseURI = ", await nervape.baseURI());
-  const tx = await nervape.setBaseURI("https://t-api.nervape.com/metadata/item/");
+
+  const tx = await nervape.setBaseURI("https://api.nervape.com/metadata/item/");
   const receipt = await tx.wait();
   console.log("setBaseURI = ", receipt.status);
+  console.log("baseURI = ", await nervape.baseURI());
 });
 
 task("deploy:addSpecialClasses").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
@@ -173,13 +177,13 @@ task("deploy:addSpecialClasses").setAction(async function (taskArguments: TaskAr
   const nervapeFactory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const special = getDeployment(network.name, "SpecialProxy");
   const nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(special);
-  await nervape.addNewClass(100, 0);
+  await nervape.addNewClass(10, 0);
   console.log("add bridge class: ", 1);
 
-  console.log("baseURI = ", await nervape.baseURI());
-  const tx = await nervape.setBaseURI("https://t-api.nervape.com/metadata/special/");
+  const tx = await nervape.setBaseURI("https://api.nervape.com/metadata/special/");
   const receipt = await tx.wait();
   console.log("setBaseURI = ", receipt.status);
+  console.log("baseURI = ", await nervape.baseURI());
 });
 
 task("deploy:getCharacter").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
