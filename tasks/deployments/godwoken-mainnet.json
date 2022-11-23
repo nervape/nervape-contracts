@@ -10,6 +10,6 @@
   "ItemProxy": "0xf780a8e4E9a5eaeC25bd7baBa88b9071C949e259",
   "SpecialProxy": "0xEbf51a5B54B8fE069Bc5858be864AeD179EA0795",
 
-  "BridgeMinter": "",
-  "BridgeMinterOperator": "0x07E97ccA16E1660FB01Ec4e19b021b39871bFe97"
+  "BridgeMinter": "0x8E238e0Ac84202eaa7FE32e20685f170B4F43B1f",
+  "BridgeMinterOperator": "0xE6d84115EEbe592F3F06cF83619c2Db34eB06E6C"
 }

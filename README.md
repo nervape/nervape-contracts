@@ -1,18 +1,6 @@
-# nervape contracts
+# Nervape contracts
 
-nervape solidity smart contracts
-
-## Deployed Contracts
-
-### Godwoken v1 testnet
-
-Nervape NFT: 0xD0Df7A0C50D9c222cc66208D81549B2D96108bd9
-
-MockToken: 0x42502Bd78fCdB4CB807b9E20b80Aa0e0d9833663
-
-### Godwoken v1 mainnet
-
-TODO
+Nervape solidity smart contracts
 
 ## Usage
 
@@ -89,22 +77,6 @@ Delete the smart contract artifacts, the coverage reports and the Hardhat cache:
 
 ```sh
 $ yarn clean
-```
-
-### Deploy
-
-Deploy the contracts to Hardhat Network:
-
-Deploy to testnet
-
-```sh
-# deploy ape factory
-$ yarn deploy:factory --network godwoken-testnet
-```
-
-```sh
-# deploy ape minter
-$ yarn deploy:minter --network godwoken-testnet
 ```
 
 ## Syntax Highlighting

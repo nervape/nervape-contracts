@@ -48,7 +48,7 @@ task("deploy:bridgeMinter").setAction(async function (taskArguments: TaskArgumen
       )
   );
   await minter.deployed();
-  console.log("BridgeMinter deployed to: ", minter.address);
+  console.log("BridgeMinter deployed to ", minter.address);
 
   const tx = await minter.setOperator(getDeployment(network.name, "BridgeMinterOperator"));
   const receipt = await tx.wait();
@@ -178,26 +178,20 @@ task("deploy:addSpecialClasses").setAction(async function (taskArguments: TaskAr
   const special = getDeployment(network.name, "SpecialProxy");
   const nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(special);
   await nervape.addNewClass(10, 0);
-  console.log("add bridge class: ", 1);
-
-  const tx = await nervape.setBaseURI("https://api.nervape.com/metadata/special/");
-  const receipt = await tx.wait();
-  console.log("setBaseURI = ", receipt.status);
-  console.log("baseURI = ", await nervape.baseURI());
 });
 
 task("deploy:getCharacter").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
   const signers: SignerWithAddress[] = await ethers.getSigners();
   const nervapeFactory = <Nervape__factory>await ethers.getContractFactory("Nervape");
   const character = getDeployment(network.name, "CharacterProxy");
-  const nervape = <Nervape>(
-    await nervapeFactory.connect(signers[0]).attach("0x821543e1e3923bb6c7efa6e5ebd5f83da3b25cd8")
-  );
+  const nervape = <Nervape>await nervapeFactory.connect(signers[0]).attach(character);
   const name = await nervape.name();
   const symbol = await nervape.symbol();
+  const baseURI = await nervape.baseURI();
 
   console.log("name = ", name);
   console.log("symbol = ", symbol);
+  console.log("baseURI = ", baseURI);
 });
 
 task("deploy:setConfig").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
@@ -241,9 +235,28 @@ task("deploy:setBridgeConfig").setAction(async function (taskArguments: TaskArgu
   const tx = await minter.setOperator(getDeployment(network.name, "BridgeMinterOperator"));
   const receipt = await tx.wait();
   console.log("setOperator = ", receipt.status);
+});
 
-  // const tx = await nervape.setBaseURI("https://t-api.nervape.com/metadata/character/");
-  // const receipt = await tx.wait()
-  // console.log("setBaseURI = ", receipt.status)
-  // nervape.setMinter();
+task("deploy:mintSpecial").setAction(async function (taskArguments: TaskArguments, { ethers, network }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const nervapeFactory = <Nervape__factory>await ethers.getContractFactory("Nervape");
+  const special = <Nervape>await nervapeFactory.connect(signers[0]).attach(getDeployment(network.name, "SpecialProxy"));
+  const lastClassId = await special.lastClassId();
+  const winnerAddrs = [
+    "0x5C30755fb63e910200016A9be44652F20B8d0164",
+    "0xA326889A8938EB49FCfF4ca288D931e2b04fF625",
+    "0xDb1e5634fca44EcD4d1c459E1eEf9E162Bfa11B0",
+    "0x0D0Ee8453A0dD6BEd0208E0651D290F51fD1eA4c",
+    "0x2799c776e4A58693e85f9ad8ddA432e7b0e09866",
+    "0xcB46E951551E5046630F5BA49eD55f71EA28A179",
+    "0x327b0c7EdB1efFD6d1325DA8d9f2ce92d633C840",
+    "0x7846e738f5509A23de53820FEa3031EBe4deF351",
+    "0x481f16167E1AE237593dD7AC80912d130E4235C8",
+    "0xe568C0DDfad18FD631E1Ee155373e2D02DB6723f",
+  ];
+  for (let addr of winnerAddrs) {
+    const tx = await special.mint(2, addr);
+    const receipt = await tx.wait();
+    console.log("minted = ", addr, receipt.status);
+  }
 });

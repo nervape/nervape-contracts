@@ -89,16 +89,22 @@ describe("Nervape", function () {
         await this.nervape.addNewClass(3, 0);
       }
       const classId = await this.nervape.lastClassId();
+      expect(classId).to.eq(11);
       await this.nervape.connect(this.signers.minter).mint(classId, this.signers.user.address);
       expect(await this.nervape.totalSupply()).to.eq(1);
       expect(await this.nervape.totalSupplyOfClass(classId)).to.eq(1);
       expect(await this.nervape.balanceOf(this.signers.user.address)).to.eq(1);
+      expect(await this.nervape.tokenOfOwnerByIndex(this.signers.user.address, 0)).to.eq("10110001");
     });
     it("should be reverted if exceeds max supply", async function () {
       await this.nervape.addNewClass(3, 0);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
       await this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address);
+      expect(await this.nervape.tokenOfOwnerByIndex(this.signers.user.address, 0)).to.eq("10010001");
+      expect(await this.nervape.tokenOfOwnerByIndex(this.signers.user.address, 1)).to.eq("10010002");
+      expect(await this.nervape.tokenOfOwnerByIndex(this.signers.user.address, 2)).to.eq("10010003");
+      expect(await this.nervape.totalSupplyOfClass(1)).to.eq(3);
       await expect(this.nervape.connect(this.signers.minter).mint(1, this.signers.user.address)).to.be.revertedWith(
         "Exceeded max supply",
       );
