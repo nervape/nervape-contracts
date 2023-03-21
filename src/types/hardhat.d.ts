@@ -97,9 +97,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CampaignMinter__factory>;
     getContractFactory(
-      name: "Creatape",
+      name: "NervapeComposite",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Creatape__factory>;
+    ): Promise<Contracts.NervapeComposite__factory>;
     getContractFactory(
       name: "GroupMinter",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -255,10 +255,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.CampaignMinter>;
     getContractAt(
-      name: "Creatape",
+      name: "NervapeComposite",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Creatape>;
+    ): Promise<Contracts.NervapeComposite>;
     getContractAt(
       name: "GroupMinter",
       address: string,

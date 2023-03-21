@@ -12,7 +12,7 @@ import "solidity-coverage";
 import "./tasks/accounts";
 import "./tasks/deploy";
 
-dotenvConfig({ path: resolve(__dirname, "./.env.mainnet") });
+dotenvConfig({ path: resolve(__dirname, "./.env") });
 
 // Ensure that we have all the environment variables we need.
 const mnemonic: string | undefined = process.env.MNEMONIC;
